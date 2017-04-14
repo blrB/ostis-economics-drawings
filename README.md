@@ -1,9 +1,11 @@
 # economics-drawings
 
-## Installation for grunt
+UI-component for https://github.com/ShunkevichDV/ostis
 
-1. Install node.js(Example https://nodejs.org/en/download/package-manager/).
-2. Install npm.
-3. Install grunt-cli (sudo npm install -g grunt-cli). 
-4. Install dependencies.
-5. Execute the command grunt at the terminal. 
+## Build component
+
+```sh
+
+grunt build
+
+```
