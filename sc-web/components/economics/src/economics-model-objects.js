@@ -872,3 +872,53 @@ Economics.ModelBus.prototype.destroy = function() {
         this.source.removeBus();
 };
 
+Economics.ModelProcedure = function(options) {
+    Economics.ModelObject.call(this, options);
+
+    this.labelAddr = options.labelAddr;
+    this.labelString = options.labelString;
+    this.addr = options.addr;
+};
+
+
+Economics.ModelProcedure.prototype = Object.create(Economics.ModelObject.prototype);
+
+Economics.ModelProcedure.prototype.getAllObjectsByContour = function(contour) {
+
+    return new Promise(function (resolve, reject) {
+        // TODO
+    });
+};
+
+Economics.ModelAction = function(options) {
+    Economics.ModelObject.call(this, options);
+
+    this.labelAddr = options.labelAddr;
+    this.labelString = options.labelString;
+    this.addr = options.addr;
+};
+
+Economics.ModelAction.prototype = Object.create( Economics.ModelObject.prototype );
+
+Economics.ModelAction.prototype.getAllObjectsByContour = function(contour) {
+
+    return new Promise(function (resolve, reject) {
+        // TODO
+    });
+};
+
+Economics.ModelArrow = function(options) {
+    Economics.ModelObject.call(this, options);
+
+    this.source = options.source;
+    this.target = options.target;
+};
+
+Economics.ModelArrow.prototype = Object.create( Economics.ModelObject.prototype );
+
+Economics.ModelArrow.prototype.getAllObjectsByContour = function(contour) {
+
+    return new Promise(function (resolve, reject) {
+        // TODO
+    });
+};
