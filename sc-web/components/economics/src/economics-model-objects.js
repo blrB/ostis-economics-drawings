@@ -883,10 +883,56 @@ Economics.ModelProcedure = function(options) {
 
 Economics.ModelProcedure.prototype = Object.create(Economics.ModelObject.prototype);
 
-Economics.ModelProcedure.prototype.getAllObjectsByContour = function(contour) {
+Economics.ModelProcedure.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
-        // TODO
+        window.sctpClient.iterate_constr(
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                [   EconomicsKeynodesHandler.scKeynodes.concept_administrative_procedure,
+                    sc_type_arc_common | sc_type_const,
+                    sc_type_node | sc_type_const,
+                    sc_type_arc_pos_const_perm,
+                    parseInt(contour)
+                ],
+                {"labelAddr": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                [   "labelAddr",
+                    sc_type_arc_access | sc_type_var | sc_type_arc_pos | sc_type_arc_perm,
+                    sc_type_node | sc_type_var,
+                    sc_type_arc_pos_const_perm,
+                    parseInt(contour)
+                ],
+                {"addr": 2})
+        ).done(function (results) {
+
+            var procedures = [];
+
+            for (var template = 0; template < results.results.length; template++) {
+                var labelAddr = results.get(template, "labelAddr");
+                var addr = results.get(template, "addr");
+                var procedure = new Economics.ModelProcedure({
+                    labelAddr: labelAddr,
+                    labelString: null,
+                    addr: addr
+                });
+                procedures.push(procedure);
+            }
+
+            var labelAddrs = procedures.map(function(procedure) {
+                return procedure.labelAddr;
+            });
+
+            SCWeb.core.Server.resolveIdentifiers(labelAddrs, function (idtfs) {
+                procedures.forEach(function (procedure) {
+                    procedure.labelString = idtfs[procedure.labelAddr];
+                });
+            });
+
+            resolve(procedures);
+        }).fail(function () {
+            console.log("fail in Economics.ModelProcedure.getAllObjectsByContour");
+            reject();
+        });
     });
 };
 
@@ -900,10 +946,10 @@ Economics.ModelAction = function(options) {
 
 Economics.ModelAction.prototype = Object.create( Economics.ModelObject.prototype );
 
-Economics.ModelAction.prototype.getAllObjectsByContour = function(contour) {
+Economics.ModelAction.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
-        // TODO
+        resolve("TODO Economics.ModelAction.getAllObjectsByContour " + contour);
     });
 };
 
@@ -916,9 +962,9 @@ Economics.ModelArrow = function(options) {
 
 Economics.ModelArrow.prototype = Object.create( Economics.ModelObject.prototype );
 
-Economics.ModelArrow.prototype.getAllObjectsByContour = function(contour) {
+Economics.ModelArrow.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
-        // TODO
+        resolve("TODO Economics.ModelArrow.getAllObjectsByContour " + contour);
     });
 };

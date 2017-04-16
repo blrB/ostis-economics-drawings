@@ -3,7 +3,15 @@ EconomicsComponent = {
     formats: ['format_economics_json'],
     struct_support: true,
     factory: function(sandbox) {
-        return new economicsViewerWindow(sandbox);
+        return new Promise(function (resolve, regect) {
+            if (EconomicsKeynodesHandler.load){
+                resolve(economicsViewerWindow(sandbox));
+            } else {
+                EconomicsKeynodesHandler.initSystemIds(function () {
+                    resolve(economicsViewerWindow(sandbox));
+                })
+            }
+        });
     }
 };
 
@@ -189,7 +197,13 @@ var economicsViewerWindow = function(sandbox) {
     this.sandbox.eventApplyTranslation = $.proxy(this.applyTranslation, this);
     this.sandbox.eventStructUpdate = $.proxy(this.eventStructUpdate, this);
 
-    this.sandbox.updateContent();
+    //this.sandbox.updateContent();
+
+    // subscripe component
+    var startIdIndex = 7;
+    this.window_id = this.domContainer.substring(startIdIndex) + '_' + this.sandbox.command_state.format;
+    SCWeb.ui.KeyboardHandler.subscribeWindow(this.window_id, this.editor.keyboardCallbacks);
+    SCWeb.ui.OpenComponentHandler.subscribeComponent(this.window_id, this.editor.openComponentCallbacks);
 };
 
 

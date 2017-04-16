@@ -1,7 +1,10 @@
 EconomicsKeynodesHandler = {
 
     systemIds: [
-        'sc_garbage'
+        'nrel_goto',
+        'nrel_inclusion',
+        'concept_administrative_procedure',
+        'question'
     ],
 
     scKeynodes: {},
