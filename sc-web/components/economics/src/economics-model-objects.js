@@ -926,12 +926,11 @@ Economics.ModelProcedure.getAllObjectsByContour = function(contour) {
                 procedures.forEach(function (procedure) {
                     procedure.labelString = idtfs[procedure.labelAddr];
                 });
+                resolve(procedures);
             });
-
-            resolve(procedures);
         }).fail(function () {
             console.log("fail in Economics.ModelProcedure.getAllObjectsByContour");
-            reject();
+            resolve([]);
         });
     });
 };
@@ -949,7 +948,52 @@ Economics.ModelAction.prototype = Object.create( Economics.ModelObject.prototype
 Economics.ModelAction.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
-        resolve("TODO Economics.ModelAction.getAllObjectsByContour " + contour);
+        window.sctpClient.iterate_constr(
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                [   EconomicsKeynodesHandler.scKeynodes.question,
+                    sc_type_arc_common | sc_type_const,
+                    sc_type_node | sc_type_const,
+                    sc_type_arc_pos_const_perm,
+                    parseInt(contour)
+                ],
+                {"labelAddr": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                [   "labelAddr",
+                    sc_type_arc_access | sc_type_var | sc_type_arc_pos | sc_type_arc_perm,
+                    sc_type_node | sc_type_var,
+                    sc_type_arc_pos_const_perm,
+                    parseInt(contour)
+                ],
+                {"addr": 2})
+        ).done(function (results) {
+
+            var procedures = [];
+
+            for (var template = 0; template < results.results.length; template++) {
+                var labelAddr = results.get(template, "labelAddr");
+                var addr = results.get(template, "addr");
+                var procedure = new Economics.ModelAction({
+                    labelAddr: labelAddr,
+                    labelString: null,
+                    addr: addr
+                });
+                procedures.push(procedure);
+            }
+
+            var labelAddrs = procedures.map(function(procedure) {
+                return procedure.labelAddr;
+            });
+
+            SCWeb.core.Server.resolveIdentifiers(labelAddrs, function (idtfs) {
+                procedures.forEach(function (procedure) {
+                    procedure.labelString = idtfs[procedure.labelAddr];
+                });
+                resolve(procedures);
+            });
+        }).fail(function () {
+            console.log("fail in Economics.ModelAction.getAllObjectsByContour");
+            resolve([]);
+        });
     });
 };
 
@@ -965,6 +1009,44 @@ Economics.ModelArrow.prototype = Object.create( Economics.ModelObject.prototype 
 Economics.ModelArrow.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
-        resolve("TODO Economics.ModelArrow.getAllObjectsByContour " + contour);
+        window.sctpClient.iterate_constr(
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_A,
+                [   parseInt(contour),
+                    sc_type_arc_pos_const_perm,
+                    sc_type_node | sc_type_var
+                ],
+                {"source": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_A,
+                [   parseInt(contour),
+                    sc_type_arc_pos_const_perm,
+                    sc_type_node | sc_type_var
+                ],
+                {"target": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_F_A_F,
+                [   "source",
+                    sc_type_arc_common | sc_type_var,
+                    "target",
+                    sc_type_arc_access | sc_type_var | sc_type_arc_pos | sc_type_arc_perm,
+                    EconomicsKeynodesHandler.scKeynodes.nrel_goto
+                ])
+        ).done(function (results) {
+
+            var procedures = [];
+
+            for (var template = 0; template < results.results.length; template++) {
+                var source = results.get(template, "source");
+                var target = results.get(template, "target");
+                var procedure = new Economics.ModelArrow({
+                    source: source,
+                    target: target
+                });
+                procedures.push(procedure);
+            }
+
+            resolve(procedures);
+        }).fail(function () {
+            console.log("fail in Economics.ModelArrow.getAllObjectsByContour");
+            resolve([]);
+        });
     });
 };
