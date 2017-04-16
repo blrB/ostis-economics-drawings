@@ -45,6 +45,42 @@ Economics.TemplateFinder.prototype = {
 
 function templateTest() {
 
+    function getRandomInt0to100() {
+        return Math.floor(Math.random() * (100));
+    }
+
+    function viewInEditor(data) {
+        var scene = testEditor.scene;
+        data[0].forEach(function (model) {
+            var x = getRandomInt0to100();
+            var y = getRandomInt0to100();
+            var link = Economics.Creator.createLink(new Economics.Vector3(x, y, 0), '');
+            link.addr = model.addr;
+            link.setContent(model.labelString);
+            scene.appendObject(link);
+        });
+        data[1].forEach(function (model) {
+            var x = getRandomInt0to100();
+            var y = getRandomInt0to100();
+            var link = Economics.Creator.createLink(new Economics.Vector3(x, y, 0), '');
+            link.addr = model.addr;
+            link.setContent(model.labelString);
+            scene.appendObject(link);
+        });
+        data[2].forEach(function (model) {
+            var source = scene.links.find(function (item) {
+                return item.addr == model.source;
+            });
+            var target = scene.links.find(function (item) {
+                return item.addr == model.target;
+            });
+            var edge = Economics.Creator.createEdge(source, target, EconomicsTypeEdgeNow);
+            scene.appendObject(edge);
+        });
+        testEditor.scene.layout();
+        testEditor.render.update();
+    }
+
     SCWeb.core.Server.resolveScAddr(['test_economics'], function (keynodes) {
         contour = keynodes['test_economics'];
 
@@ -55,6 +91,7 @@ function templateTest() {
 
         Promise.all(templatePromises).then(function (data) {
             console.log(data);
+            viewInEditor(data)
         });
     });
 }

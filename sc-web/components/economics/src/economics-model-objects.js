@@ -880,7 +880,6 @@ Economics.ModelProcedure = function(options) {
     this.addr = options.addr;
 };
 
-
 Economics.ModelProcedure.prototype = Object.create(Economics.ModelObject.prototype);
 
 Economics.ModelProcedure.getAllObjectsByContour = function(contour) {

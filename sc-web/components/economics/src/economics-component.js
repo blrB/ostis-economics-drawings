@@ -198,6 +198,9 @@ var economicsViewerWindow = function(sandbox) {
     this.sandbox.eventStructUpdate = $.proxy(this.eventStructUpdate, this);
 
     //this.sandbox.updateContent();
+    // TODO delete in master
+    console.log(sandbox);
+    testEditor = this.editor;
 
     // subscripe component
     var startIdIndex = 7;
@@ -206,6 +209,9 @@ var economicsViewerWindow = function(sandbox) {
     SCWeb.ui.OpenComponentHandler.subscribeComponent(this.window_id, this.editor.openComponentCallbacks);
 };
 
-
-
 SCWeb.core.ComponentManager.appendComponentInitialize(EconomicsComponent);
+
+
+// TODO delete from master
+
+var testEditor;
