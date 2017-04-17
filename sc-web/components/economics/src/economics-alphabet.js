@@ -11,13 +11,13 @@ var EconomicsAlphabet = {
         
         // edge markers
         defs.append('svg:marker')
-            .attr('id', 'end-arrow-access_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
+            .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
             .attr('markerWidth', 5).attr('markerHeight', 10).attr('orient', 'auto')
           .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
             
         defs.append('svg:marker')
-            .attr('id', 'end-arrow-common_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
+            .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
             .attr('markerWidth', 1.5).attr('markerHeight', 6).attr('orient', 'auto')
           .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
@@ -125,7 +125,7 @@ var EconomicsAlphabet = {
                 var p = d3_group.append('svg:path')
                     .classed(main_style, true)
                     .classed('EconomicsEdgeEndArrowAccess', true)
-                    .style("marker-end", "url(#end-arrow-access_" + containerId + ")")
+                    .style("marker-end", "url(#end-arrow-access_for_economics_" + containerId + ")")
                     .attr('d', position_path);
                     
                 if (edge.sc_type & sc_type_constancy_mask) {
