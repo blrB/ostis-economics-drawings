@@ -53,6 +53,10 @@ Economics.Scene = function(options) {
     this.links = [];
     this.edges = [];
 
+    this.actions = [];
+    this.procedures = [];
+    this.arrows = [];
+
     this.objects = Object.create(null);
     this.edit_mode = EconomicsEditMode.EconomicsModeSelect;
     
@@ -104,6 +108,16 @@ Economics.Scene.prototype = {
         link.scene = this;
     },
 
+    appendProcedure: function(procedure) {
+        this.procedures.push(procedure);
+        procedure.scene = this;
+    },
+
+    appendAction: function(action) {
+        this.actions.push(action);
+        action.scene = this;
+    },
+
     appendEdge: function(edge) {
         this.edges.push(edge);
         edge.scene = this;
@@ -114,6 +128,10 @@ Economics.Scene.prototype = {
             this.appendLink(obj);
         } else if (obj instanceof Economics.ModelEdge) {
             this.appendEdge(obj);
+        } else if (obj instanceof Economics.ModelAction) {
+            this.appendAction(obj);
+        } else if (obj instanceof Economics.ModelProcedure) {
+            this.appendProcedure(obj);
         }
     },
     

@@ -11,6 +11,27 @@ Economics.Creator.createLink = function(pos, containerId) {
     return link;
 };
 
+Economics.Creator.createProcedure = function(pos, containerId) {
+    var procedure = new Economics.ModelProcedure({
+        position: pos.clone(),
+        scale: new Economics.Vector2(50, 50),
+        sc_type: sc_type_link,
+        labelString: containerId
+    });
+    procedure.setContent("");
+    return procedure;
+};
+Economics.Creator.createAction = function(pos, containerId) {
+    var action = new Economics.ModelAction({
+        position: pos.clone(),
+        scale: new Economics.Vector2(50, 50),
+        sc_type: sc_type_link,
+        containerId: containerId
+    });
+    action.setContent("");
+    return action;
+};
+
 /**
  * Create edge between two specified objects
  * @param {Economics.ModelObject} source Edge source object

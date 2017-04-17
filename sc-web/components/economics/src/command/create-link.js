@@ -22,7 +22,8 @@ EconomicsCommandCreateLink.prototype = {
     execute: function() {
         if (this.link == null){
             this.link = Economics.Creator.createLink(new Economics.Vector3(this.x, this.y, 0), '');
-            this.scene.appendLink(this.link);
+            // this.scene.appendLink(this.link);
+            this.scene.appendAction(this.link);
             this.scene.updateRender();
             this.scene.clearSelection();
             this.scene.appendSelection(this.link);
