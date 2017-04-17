@@ -249,14 +249,14 @@ Economics.Render.prototype = {
             .style('fill','rgb(204,218,169)');
 
         g.append('svg:foreignObject')
-            .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
+            // .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
             .attr("width", "100%")
             .attr("height", "100%")
             .append("xhtml:link_body")
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div id="action_' + self.containerId + '_' + d.id + '" class=\"EconomicsLinkContainer\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
+                return '<div id="action_' + self.containerId + '_' + d.id + '" class=\"EconomicsAction\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
             });
 
 
@@ -292,10 +292,9 @@ Economics.Render.prototype = {
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div style="display: inline-block;" style="vertical-align: middle;" id="procedure_' + self.containerId + '_' + d.id + '" class=\"EconomicsLinkContainer\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
+                return '<div style="vertical-align: middle;" id="procedure_' + self.containerId + '_' + d.id + '" class=\"EconomicsProcedure\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
             });
-                                                                                                                                // display: inline-block;
-                                                                                                                                // vertical-align: middle;
+
 
         eventsWrap(g);
 
@@ -420,16 +419,13 @@ Economics.Render.prototype = {
 
             g.select('circle')
                 .attr('cx', function (d) {
-                    // d.scale.x = Math.min(linkDiv.find('.impl').outerWidth(), 450) + 10;
                     return d.scale.x;
                 })
                 .attr('cy', function (d) {
-                    // d.scale.y = Math.min(linkDiv.outerHeight(), 350);
                     return d.scale.y;
                 })
                 .attr('r', function (d) {
-                    d.scale.y = Math.min(linkDiv.outerHeight(), 350);
-                    d.scale.y = 75;
+                    d.scale.y = 60;
                     return d.scale.y + self.linkBorderWidth;
                 })
                 .attr('class', function (d) {
@@ -493,7 +489,7 @@ Economics.Render.prototype = {
                 })
                 .attr('height', function (d) {
                     d.scale.y = Math.min(linkDiv.outerHeight(), 350);
-                    d.scale.y = 75;
+                    d.scale.y = 80;
                     return d.scale.y ;
                 })
                 .attr('class', function (d) {
@@ -513,7 +509,7 @@ Economics.Render.prototype = {
                     return d.scale.y;
                 })
                 .attr('y2', function (d) {
-                    return d.scale.y-75;
+                    return d.scale.y-80;
                 })
                 .style("stroke", "rgb(0,0,0)");
             g.append('svg:line')
@@ -527,7 +523,7 @@ Economics.Render.prototype = {
                     return d.scale.y;
                 })
                 .attr('y2', function (d) {
-                    return d.scale.y-75;
+                    return d.scale.y-80;
                 })
                 .style("stroke", "rgb(0,0,0)");
 

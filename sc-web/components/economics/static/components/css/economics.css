@@ -34,12 +34,25 @@
     stroke-width: 5px;
 }
 
-.EconomicsLinkContainer {
+.EconomicsProcedure {
     display: block; 
-    padding: 5px 0px 5px 5px;
+    text-align: center;
+    margin:5px 15px 5px 15px;
     min-width: 25px;
     min-height: 25px;
+    max-height: 90px;
     
+}
+
+.EconomicsAction{
+    display: block;
+    font-size: 14px;
+    text-align: center;
+    margin:40px 20px 40px 0px;
+    min-width: 25px;
+    min-height: 25px;
+    max-height: 50px;
+
 }
 
 /* --- Edges --- */

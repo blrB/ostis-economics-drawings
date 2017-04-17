@@ -36,7 +36,11 @@ EconomicsSelectListener.prototype = {
     },
 
     onMouseDoubleClick: function (x, y) {
-        return false;
+        if (this.scene.pointed_object) {
+            return false;
+        }
+        this.scene.commandManager.execute(new EconomicsCommandCreateAction(x, y, this.scene));
+        return true;
     },
 
     onMouseDownObject: function(obj) {
