@@ -192,12 +192,8 @@ function economicsScStructTranslator(_editor, _sandbox) {
             if (!sandbox.is_struct)
                 throw "Invalid state. Trying translate sc-link into sc-memory";
 
-            var dfdNodes = jQuery.Deferred();
-
             editor.scene.commandManager.clear();
-            var nodes = editor.scene.nodes.slice();
             var links = editor.scene.links.slice();
-            var buses = editor.scene.buses.slice();
             var objects = [];
             
             
@@ -217,89 +213,6 @@ function economicsScStructTranslator(_editor, _sandbox) {
                 appendObjects();
             }
 
-            
-            /// --------------------
-            var translateNodes = function() {
-                var dfdNodes = new jQuery.Deferred();
-                
-                var implFunc = function(node) {
-                    var dfd = new jQuery.Deferred();
-
-                    if (!node.sc_addr) {
-                        window.sctpClient.create_node(node.sc_type).done(function (r) {
-                            node.setScAddr(r);
-                            node.setObjectState(EconomicsObjectState.NewInMemory);
-                            objects.push(node);
-                            if (node.text) {
-                                translateIdentifier(node)
-                                    .done(dfd.resolve)
-                                    .fail(dfd.reject);
-                            } else {
-                                dfd.resolve();
-                            }
-                        });
-                    } else {
-                        dfd.resolve();
-                    }
-
-                    return dfd.promise();
-                }
-                
-                var funcs = [];
-                for (var i = 0; i < nodes.length; ++i) {
-                    funcs.push(fQueue.Func(implFunc, [ nodes[i] ]));
-                }
-                
-                fQueue.Queue.apply(this, funcs).done(dfdNodes.resolve).fail(dfdNodes.reject);
-                
-                return dfdNodes.promise();
-            }
-            
-            var preTranslateContoursAndBus = function() {
-                var dfd = new jQuery.Deferred();
-                
-                // create sc-struct nodes
-                var scAddrGen = function(c) {
-                    var dfd = new jQuery.Deferred();
-                    
-                    if (c.sc_addr)
-                        dfd.resolve();
-                    else {
-                        window.sctpClient.create_node(sc_type_const | sc_type_node | sc_type_node_struct).done(function (node) {
-                            c.setScAddr(node);
-                            c.setObjectState(EconomicsObjectState.NewInMemory);
-                            objects.push(c);
-                            if (c.text) {
-                                translateIdentifier(c)
-                                    .done(dfd.resolve)
-                                    .fail(dfd.reject);
-                            } else {
-                                dfd.resolve();
-                            }
-                        });
-                    }
-
-                    return dfd.promise();
-                };
-                var funcs = [];
-                for (var i = 0; i < editor.scene.contours.length; ++i){
-                    editor.scene.contours[i].addNodesWhichAreInContourPolygon(editor.scene.nodes);
-                    editor.scene.contours[i].addNodesWhichAreInContourPolygon(editor.scene.links);
-                    editor.scene.contours[i].addEdgesWhichAreInContourPolygon(editor.scene.edges);
-                    funcs.push(fQueue.Func(scAddrGen, [ editor.scene.contours[i] ]));
-                }
-
-                for (var number_bus = 0; number_bus < buses.length; ++number_bus) {
-                    buses[number_bus].setScAddr(buses[number_bus].source.sc_addr);
-                }
-
-                // run tasks
-                fQueue.Queue.apply(this, funcs).done(dfd.resolve).fail(dfd.reject);
-                
-                return dfd.promise();
-            }
-            
-            /// --------------------
             var translateEdges = function() {
                 var dfd = new jQuery.Deferred();
                 
@@ -328,7 +241,7 @@ function economicsScStructTranslator(_editor, _sandbox) {
                         }
                         else
                             window.setTimeout(doIteration, 0);
-                    };
+                    }
                     
                     if (edge.sc_addr) 
                         throw "Edge already have sc-addr";
@@ -359,39 +272,8 @@ function economicsScStructTranslator(_editor, _sandbox) {
                     dfd.resolve();
                 
                 return dfd.promise();
-            }
-            
-            var translateContours = function() {
-                var dfdCountours = new jQuery.Deferred();
-               
-                // now need to process arcs from countours to child elements
-                var arcGen = function(contour, child) {
-                    var dfd = new jQuery.Deferred();
+            };
 
-                    window.sctpClient.iterate_elements(SctpIteratorType.SCTP_ITERATOR_3F_A_F,
-                                                       [contour.sc_addr, sc_type_arc_pos_const_perm, child.sc_addr])
-                    .done(dfd.resolve)
-                    .fail(function() {
-                        window.sctpClient.create_arc(sc_type_arc_pos_const_perm, contour.sc_addr, child.sc_addr).done(dfd.resolve).fail(dfd.reject);
-                    });
-
-                    return dfd.promise();
-                };
-
-                var acrFuncs = [];
-                for (var i = 0; i < editor.scene.contours.length; ++i) {
-                    var c = editor.scene.contours[i];
-                    for (var j = 0;  j < c.childs.length; ++j) {
-                        acrFuncs.push(fQueue.Func(arcGen, [ c, c.childs[j] ]));
-                    }
-                }
-
-                fQueue.Queue.apply(this, acrFuncs).done(dfdCountours.resolve).fail(dfdCountours.reject);
-
-                return dfdCountours.promise();
-            }            
-            
-            /// --------------------
             var translateLinks = function() {
                 var dfdLinks = new jQuery.Deferred();
                 
@@ -446,7 +328,7 @@ function economicsScStructTranslator(_editor, _sandbox) {
                     }
 
                     return dfd.promise();
-                }
+                };
                 
                 var funcs = [];
                 for (var i = 0; i < links.length; ++i) {
@@ -456,17 +338,13 @@ function economicsScStructTranslator(_editor, _sandbox) {
                 fQueue.Queue.apply(this, funcs).done(dfdLinks.resolve).fail(dfdLinks.reject);
                 
                 return dfdLinks.promise();
-            }
+            };
             
             fQueue.Queue(
-                /* Translate nodes */
-                fQueue.Func(translateNodes),
                 fQueue.Func(translateLinks),
-                fQueue.Func(preTranslateContoursAndBus),
-                fQueue.Func(translateEdges),
-                fQueue.Func(translateContours)
+                fQueue.Func(translateEdges)
             ).done(fireCallback);
             
         }
     };
-};
+}

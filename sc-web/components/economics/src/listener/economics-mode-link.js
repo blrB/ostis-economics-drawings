@@ -15,7 +15,7 @@ EconomicsLinkListener.prototype = {
     },
 
     onMouseDoubleClick: function (x, y) {
-        if (this.scene.pointed_object && !(this.scene.pointed_object instanceof Economics.ModelContour)) {
+        if (this.scene.pointed_object) {
             return false;
         }
         this.scene.commandManager.execute(new EconomicsCommandCreateLink(x, y, this.scene));

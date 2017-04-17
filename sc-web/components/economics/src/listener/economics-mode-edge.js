@@ -40,19 +40,10 @@ EconomicsEdgeListener.prototype = {
         } else {
             // source and target must be not equal
             if (scene.edge_data.source != obj) {
-                if (!(obj instanceof Economics.ModelContour && obj.isNodeInPolygon(scene.edge_data.source))) {
-                    scene.commandManager.execute(new EconomicsCommandCreateEdge(scene.edge_data.source,
-                        obj,
-                        this.scene));
-                    return true;
-                } else {
-                    scene.drag_line_points.push({
-                        x: scene.mouse_pos.x,
-                        y: scene.mouse_pos.y,
-                        idx: scene.drag_line_points.length
-                    });
-                    return true;
-                }
+                scene.commandManager.execute(new EconomicsCommandCreateEdge(scene.edge_data.source,
+                    obj,
+                    this.scene));
+                return true;
             } else {
                 scene.edge_data.source = scene.edge_data.target = null;
                 scene.drag_line_points.splice(0, scene.drag_line_points.length);

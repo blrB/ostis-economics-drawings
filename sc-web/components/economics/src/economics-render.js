@@ -54,8 +54,6 @@ Economics.Render.prototype = {
         this.d3_drag_line = this.d3_container.append('svg:path')
                 .attr('class', 'dragline hidden')
                 .attr('d', 'M0,0L0,0');
-        this.d3_contour_line = d3.svg.line().interpolate("cardinal-closed");
-        this.d3_contours = this.d3_container.append('svg:g').selectAll('path');
         this.d3_accept_point = this.d3_container.append('svg:use')
             .attr('class', 'EconomicsAcceptPoint hidden')
             .attr('xlink:href', '#acceptPoint')
@@ -70,8 +68,6 @@ Economics.Render.prototype = {
                 d3.event.stopPropagation();
             });
         this.d3_edges = this.d3_container.append('svg:g').selectAll('path');
-        this.d3_buses = this.d3_container.append('svg:g').selectAll('path');
-        this.d3_nodes = this.d3_container.append('svg:g').selectAll('g');
         this.d3_links = this.d3_container.append('svg:g').selectAll('g');
         this.d3_dragline = this.d3_container.append('svg:g');
         this.d3_line_points = this.d3_container.append('svg:g');
@@ -195,38 +191,8 @@ Economics.Render.prototype = {
                 if (d3.event.stopPropagation())
                     d3.event.stopPropagation();
             })
-        };
-        
-        function appendNodeVisual(g) {
-            g.append('svg:use')
-            .attr('xlink:href', function(d) {
-                return '#' + EconomicsAlphabet.getDefId(d.sc_type); 
-            })
-            .attr('class', 'sc-no-default-cmd ui-no-tooltip');
-        };
-            
-        
-        // add nodes that haven't visual
-        this.d3_nodes = this.d3_nodes.data(this.scene.nodes, function(d) { return d.id; });
-        
-        var g = this.d3_nodes.enter().append('svg:g')
-            .attr('class', function(d) {
-                return self.classState(d, (d.sc_type & sc_type_constancy_mask) ? 'EconomicsNode' : 'EconomicsNodeEmpty');
-            })
-            .attr("transform", function(d) {
-                return 'translate(' + d.position.x + ', ' + d.position.y + ')';
-            });
-        eventsWrap(g);
-        appendNodeVisual(g);
+        }
 
-        g.append('svg:text')
-            .attr('class', 'EconomicsText')
-            .attr('x', function(d) { return d.scale.x / 1.3; })
-            .attr('y', function(d) { return d.scale.y / 1.3; })
-            .text(function(d) { return d.text; });
-            
-        this.d3_nodes.exit().remove();
-        
         // add links that haven't visual
         this.d3_links = this.d3_links.data(this.scene.links, function(d) { return d.id; });
         
@@ -271,40 +237,6 @@ Economics.Render.prototype = {
         
         this.d3_edges.exit().remove();
 
-        // update contours visual
-        this.d3_contours = this.d3_contours.data(this.scene.contours, function(d) { return d.id; });
-
-        g = this.d3_contours.enter().append('svg:polygon')
-            .attr('class', function(d) {
-                return self.classState(d, 'EconomicsContour');
-            })
-            .attr('points', function(d) {
-                var verticiesString = "";
-                for (var i = 0; i < d.points.length; i++) {
-                    var vertex = d.points[i].x + ', ' + d.points[i].y + ' ';
-                    verticiesString = verticiesString.concat(vertex);
-                }
-                return verticiesString;
-            })
-            .attr('title', function(d) {
-                return d.text;
-            });
-        eventsWrap(g);
-
-        this.d3_contours.exit().remove();
-        
-        // update buses visual
-        this.d3_buses = this.d3_buses.data(this.scene.buses, function(d) { return d.id; });
-
-        g = this.d3_buses.enter().append('svg:g')
-            .attr('class', function(d) {
-                return self.classState(d, 'EconomicsBus');
-            })
-            .attr('pointer-events', 'visibleStroke');
-        eventsWrap(g);
-        
-        this.d3_buses.exit().remove();
-
         this.updateObjects();
     },
 
@@ -313,29 +245,7 @@ Economics.Render.prototype = {
     updateObjects: function() {
 
         var self = this;
-        this.d3_nodes.each(function (d) {
-            
-            if (!d.need_observer_sync) return; // do nothing
-            
-            d.need_observer_sync = false;
-            
-            var g = d3.select(this)
-                        .attr("transform", 'translate(' + d.position.x + ', ' + d.position.y + ')')
-                        .attr('class', function(d) {
-                            return self.classState(d, (d.sc_type & sc_type_constancy_mask) ? 'EconomicsNode' : 'EconomicsNodeEmpty');
-                        })
-                            
-            g.select('use')
-                .attr('xlink:href', function(d) {
-                    return '#' + EconomicsAlphabet.getDefId(d.sc_type); 
-                })
-                .attr("sc_addr", function(d) {
-                    return d.sc_addr;
-                });
-            
-            g.selectAll('text').text(function(d) { return d.text; });
-        });
-        
+
         this.d3_links.each(function (d) {
             
             if (!d.need_observer_sync && d.contentLoaded) return; // do nothing
@@ -412,58 +322,6 @@ Economics.Render.prototype = {
                 return d.sc_addr;
             });
         });
-        
-        this.d3_contours.each(function(d) {
-        
-            d3.select(this).attr('d', function(d) { 
-
-                if (!d.need_observer_sync) return; // do nothing
-
-                if (d.need_update)
-                    d.update();
-
-                var d3_contour = d3.select(this);
-
-                d3_contour.attr('class', function(d) {
-                    return self.classState(d, 'EconomicsContour');
-                });
-
-                d3_contour.attr('points', function(d) {
-                    var verticiesString = "";
-                    for (var i = 0; i < d.points.length; i++) {
-                        var vertex = d.points[i].x + ', ' + d.points[i].y + ' ';
-                        verticiesString = verticiesString.concat(vertex);
-                    }
-                    return verticiesString;
-                });
-
-                d3_contour.attr('title', function(d) {
-                    return d.text; 
-                });
-
-                d.need_update = false;
-                d.need_observer_sync = false;
-
-                return self.d3_contour_line(d.points) + 'Z';
-            })
-            .attr("sc_addr", function(d) {
-                return d.sc_addr;
-            });
-        });
-
-        this.d3_buses.each(function(d) {
-            
-            if (!d.need_observer_sync) return; // do nothing
-            d.need_observer_sync = false;
-            
-            if (d.need_update)
-                d.update();
-            var d3_bus = d3.select(this);
-            EconomicsAlphabet.updateBus(d, d3_bus);
-            d3_bus.attr('class', function(d) {
-                return self.classState(d, 'EconomicsBus');
-            });
-        });
 
         this.updateLinePoints();
     },
@@ -473,21 +331,10 @@ Economics.Render.prototype = {
     },
 
     requestUpdateAll: function () {
-        this.d3_nodes.each(function (d) {
-            d.need_observer_sync = true;
-        });
         this.d3_links.each(function (d) {
             d.need_observer_sync = true;
         });
         this.d3_edges.each(function (d) {
-            d.need_observer_sync = true;
-            d.need_update = true;
-        });
-        this.d3_contours.each(function(d) {
-            d.need_observer_sync = true;
-            d.need_update = true;
-        });
-        this.d3_buses.each(function(d) {
             d.need_observer_sync = true;
             d.need_update = true;
         });
@@ -498,9 +345,7 @@ Economics.Render.prototype = {
         var self = this;
         
 
-        this.d3_drag_line.classed('EconomicsBus', this.scene.edit_mode == EconomicsEditMode.EconomicsModeBus)
-                    .classed('dragline', true)
-                    .classed('draglineBus', this.scene.edit_mode == EconomicsEditMode.EconomicsModeBus);
+        this.d3_drag_line.classed('dragline', true);
 
         // remove old points
         drag_line_points = this.d3_dragline.selectAll('use.EconomicsRemovePoint');
@@ -525,17 +370,8 @@ Economics.Render.prototype = {
             });
         
 
-        if (this.scene.edit_mode == EconomicsEditMode.EconomicsModeBus || this.scene.edit_mode == EconomicsEditMode.EconomicsModeContour) {
-            this.d3_accept_point.classed('hidden', this.scene.drag_line_points.length == 0);
-            if (this.scene.drag_line_points.length > 0) {
-                var pos = this.scene.drag_line_points[0];
-                if (this.scene.edit_mode == EconomicsEditMode.EconomicsModeBus)
-                    pos = this.scene.drag_line_points[this.scene.drag_line_points.length - 1];
-                this.d3_accept_point.attr('transform', 'translate(' + (pos.x + 24) + ',' + pos.y + ')');
-            }
-        } else {
-            this.d3_accept_point.classed('hidden', true);
-        }
+
+        this.d3_accept_point.classed('hidden', true);
 
         if (this.scene.drag_line_points.length < 1) {
             this.d3_drag_line.classed('hidden', true);
@@ -714,6 +550,4 @@ Economics.Render.prototype = {
         var el = document.getElementById(this.containerId);
         return [el.clientWidth, el.clientHeight];
     }
-    
-
-}
+};

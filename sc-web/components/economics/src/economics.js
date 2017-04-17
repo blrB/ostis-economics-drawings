@@ -106,8 +106,6 @@ Economics.Editor.prototype = {
                 });
             if (!self.canEdit) {
                 self.hideTool(self.toolEdge());
-                self.hideTool(self.toolBus());
-                self.hideTool(self.toolContour());
                 self.hideTool(self.toolIntegrate());
                 self.hideTool(self.toolUndo());
                 self.hideTool(self.toolRedo());
@@ -150,24 +148,12 @@ Economics.Editor.prototype = {
         return $('#' + this.containerId).find('#economics-tool-' + name);
     },
 
-    toolSwitch: function() {
-        return this.tool('switch');
-    },
-    
     toolSelect: function() {
         return this.tool('select');
     },
     
     toolEdge: function() {
         return this.tool('edge');
-    },
-    
-    toolBus: function() {
-        return this.tool('bus');
-    },
-    
-    toolContour: function() {
-        return this.tool('contour');
     },
     
     toolLink: function() {
@@ -222,104 +208,29 @@ Economics.Editor.prototype = {
         var self = this;
         var container = '#' + this.containerId;
         var cont = $(container);
-            
-        var select = this.toolSelect();
-        select.button('toggle');
-        
-        // handle clicks on mode change
-        this.toolSwitch().click(function() {
-            self.canEdit = !self.canEdit;
-            var tools = [self.toolEdge(),
-                        self.toolContour(),
-                        self.toolBus(),
-                        self.toolUndo(),
-                        self.toolRedo(),
-                        self.toolDelete(),
-                        self.toolClear(),
-                        self.toolIntegrate()];
-            for (var button = 0 ; button < tools.length ; button++){
-                self.toggleTool(tools[button]);
-            }
-            self.hideTool(self.toolChangeIdtf());
-            self.hideTool(self.toolSetContent());
-            self.hideTool(self.toolChangeType());
-            self.hideTool(self.toolDelete());
-        });
-        select.click(function() {
+
+        this.toolSelect().click(function() {
             self.scene.setEditMode(EconomicsEditMode.EconomicsModeSelect);
         });
-        select.dblclick(function() {
-            self.scene.setModal(EconomicsModalMode.EconomicsModalType);
-            self.onModalChanged();
-            var tool = $(this);
-            function stop_modal() {
-                tool.popover('destroy');
-                self.scene.setEditMode(EconomicsEditMode.EconomicsModeSelect);
-                self.scene.setModal(EconomicsModalMode.EconomicsModalNone);
-            }
-            el = $(this);
-            el.popover({
-                content: self.node_types_panel_content,
-                container: container,
-                title: 'Change type',
-                html: true,
-                delay: {show: 500, hide: 100}
-            }).popover('show');
-            cont.find('.popover-title').append('<button id="economics-type-close" type="button" class="close">&times;</button>');
-            $(container + ' #economics-type-close').click(function() {
-                stop_modal();
-            });
-            $(container + ' .popover .btn').click(function() {
-                EconomicsTypeNodeNow = self.typesMap[$(this).attr('id')];
-                stop_modal();
-            });   
-        });
+
         this.toolEdge().click(function() {
             self.scene.setEditMode(EconomicsEditMode.EconomicsModeEdge);
         });
-        this.toolEdge().dblclick(function() {
-            self.scene.setModal(EconomicsModalMode.EconomicsModalType);
-            self.onModalChanged();
-            var tool = $(this);
-            function stop_modal() {
-                tool.popover('destroy');
-                self.scene.setEditMode(EconomicsEditMode.EconomicsModeEdge);
-                self.scene.setModal(EconomicsModalMode.EconomicsModalNone);
-            }
-            el = $(this);
-            el.popover({
-                content: self.edge_types_panel_content,
-                container: container,
-                title: 'Change type',
-                html: true,
-                delay: {show: 500, hide: 100}
-            }).popover('show');
-            cont.find('.popover-title').append('<button id="economics-type-close" type="button" class="close">&times;</button>');
-            $(container + ' #economics-type-close').click(function() {
-                stop_modal();
-            });
-            $(container + ' .popover .btn').click(function() {
-                EconomicsTypeEdgeNow = self.typesMap[$(this).attr('id')];
-                stop_modal();
-            });   
-        });
-        this.toolBus().click(function() {
-            self.scene.setEditMode(EconomicsEditMode.EconomicsModeBus);
-        });
-        this.toolContour().click(function() {
-            self.scene.setEditMode(EconomicsEditMode.EconomicsModeContour);
-        });
+
         this.toolLink().click(function() {
             self.scene.setEditMode(EconomicsEditMode.EconomicsModeLink);
         });
+
         this.toolUndo().click(function() {
             self.scene.commandManager.undo();
             self.scene.updateRender();
         });
+
         this.toolRedo().click(function() {
             self.scene.commandManager.redo();
             self.scene.updateRender();
         });
+
         this.toolChangeIdtf().click(function() {
             self.scene.setModal(EconomicsModalMode.EconomicsModalIdtf);
             $(this).popover({container: container});
@@ -567,7 +478,6 @@ Economics.Editor.prototype = {
             self.render.changeScale(0.9);
         });
 
-
         // initial update
         self.onModalChanged();
         self.onSelectionChanged();
@@ -585,16 +495,11 @@ Economics.Editor.prototype = {
             this.hideTool(this.toolDelete());
             if (this.scene.selected_objects.length > 1) {
                 if (this.scene.isSelectedObjectAllArcsOrAllNodes() && !this.scene.isSelectedObjectAllHaveScAddr()) {
-                    this.showTool(this.toolChangeType());
+
                 }
             } else if (this.scene.selected_objects.length == 1 && !this.scene.selected_objects[0].sc_addr) {
-                if (this.scene.selected_objects[0] instanceof Economics.ModelNode) {
-                    this.showTool(this.toolChangeIdtf());
-                    this.showTool(this.toolChangeType());
-                } else if (this.scene.selected_objects[0] instanceof Economics.ModelEdge) {
-                    this.showTool(this.toolChangeType());
-                } else if (this.scene.selected_objects[0] instanceof Economics.ModelContour) {
-                    this.showTool(this.toolChangeIdtf());
+                if (this.scene.selected_objects[0] instanceof Economics.ModelEdge) {
+
                 } else if (this.scene.selected_objects[0] instanceof Economics.ModelLink) {
                     this.showTool(this.toolSetContent());
                 }
@@ -615,11 +520,8 @@ Economics.Editor.prototype = {
             else
                 self._enableTool(tool);
         }
-        update_tool(this.toolSwitch());
         update_tool(this.toolSelect());
         update_tool(this.toolEdge());
-        update_tool(this.toolBus());
-        update_tool(this.toolContour());
         update_tool(this.toolLink());
         update_tool(this.toolUndo());
         update_tool(this.toolRedo());

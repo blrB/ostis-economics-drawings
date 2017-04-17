@@ -1,15 +1,13 @@
 var EconomicsEditMode = {
     EconomicsModeSelect: 0,
     EconomicsModeEdge: 1,
-    EconomicsModeBus: 2,
-    EconomicsModeContour: 3,
-    EconomicsModeLink: 4,
+    EconomicsModeLink: 2,
     
     /**
      * Check if specified mode is valid
      */
     isValid: function(mode) {
-        return (mode >= this.EconomicsModeSelect) && (mode <= this.EconomicsModeContour);
+        return (mode >= this.EconomicsModeSelect) && (mode <= this.EconomicsModeLink);
     }
 };
 
@@ -42,24 +40,18 @@ var KeyCode = {
 };
 
 var EconomicsTypeEdgeNow = sc_type_arc_pos_const_perm;
-var EconomicsTypeNodeNow = sc_type_node | sc_type_const;
 
 Economics.Scene = function(options) {
 
     this.listener_array = [ new EconomicsSelectListener(this),
                             new EconomicsEdgeListener(this),
-                            new EconomicsBusListener(this),
-                            new EconomicsContourListener(this),
                             new EconomicsLinkListener(this) ];
     this.listener = this.listener_array[0];
     this.commandManager = new EconomicsCommandManager();
     this.render = options.render;
     this.edit = options.edit;
-    this.nodes = [];
     this.links = [];
     this.edges = [];
-    this.contours = [];
-    this.buses = [];
 
     this.objects = Object.create(null);
     this.edit_mode = EconomicsEditMode.EconomicsModeSelect;
@@ -82,10 +74,10 @@ Economics.Scene = function(options) {
     
     // edge source and target
     this.edge_data = {source: null, target: null};
-    
+
     // bus source
     this.bus_data = {source: null, end: null};
-    
+
     // callback for selection changed
     this.event_selection_changed = null;
     // callback for modal state changes
@@ -107,59 +99,21 @@ Economics.Scene.prototype = {
         this.layout_manager.init(this);
     },
 
-    /**
-     * Appends new sc.g-node to scene
-     * @param {Economics.ModelNode} node Node to append
-     */
-    appendNode: function(node) {
-        this.nodes.push(node);
-        node.scene = this;
-    },
-    
     appendLink: function(link) {
         this.links.push(link);
         link.scene = this;
     },
 
-    /**
-     * Appends new sc.g-edge to scene
-     * @param {Economics.ModelEdge} edge Edge to append
-     */
     appendEdge: function(edge) {
         this.edges.push(edge);
         edge.scene = this;
     },
-     
-    /**
-     * Append new sc.g-contour to scene
-     * @param {Economics.ModelContour} contour Contour to append
-     */
-    appendContour: function(contour) {
-        this.contours.push(contour);
-        contour.scene = this;
-    },
-    
-    /**
-     * Append new sc.g-contour to scene
-     * @param {Economics.ModelBus} bus Bus to append
-     */
-    appendBus: function(bus) {
-        this.buses.push(bus);
-        bus.scene = this;
-    },
 
     appendObject: function(obj) {
-        if (obj instanceof Economics.ModelNode) {
-            this.appendNode(obj);
-        }else if (obj instanceof Economics.ModelLink) {
+        if (obj instanceof Economics.ModelLink) {
             this.appendLink(obj);
         } else if (obj instanceof Economics.ModelEdge) {
             this.appendEdge(obj);
-        } else if (obj instanceof Economics.ModelContour) {
-            this.appendContour(obj);
-        } else if (obj instanceof Economics.ModelBus) {
-            this.appendBus(obj);
-            obj.setSource(obj.source);
         }
     },
     
@@ -180,17 +134,10 @@ Economics.Scene.prototype = {
             }
             list.splice(idx, 1);
         }
-        if (obj instanceof Economics.ModelNode) {
-            remove_from_list(obj, this.nodes);
-        }else if (obj instanceof Economics.ModelLink) {
+        if (obj instanceof Economics.ModelLink) {
             remove_from_list(obj, this.links);
         } else if (obj instanceof Economics.ModelEdge) {
             remove_from_list(obj, this.edges);
-        } else if (obj instanceof Economics.ModelContour) {
-            remove_from_list(obj, this.contours);
-        } else if (obj instanceof Economics.ModelBus) {
-            remove_from_list(obj, this.buses);
-            obj.destroy();
         }
     },
 
@@ -211,16 +158,6 @@ Economics.Scene.prototype = {
                 if (self.edges.indexOf(root.edges[idx]) > -1) collect_objects(container, root.edges[idx]);
             }
 
-            if (root.bus)
-                if (self.buses.indexOf(root.bus) > -1) collect_objects(container, root.bus);
-
-            if (root instanceof Economics.ModelContour) {
-                for (var numberChildren = 0; numberChildren < root.childs.length; numberChildren++){
-                    if (self.nodes.indexOf(root.childs[numberChildren]) > -1) {
-                        collect_objects(container, root.childs[numberChildren]);
-                    }
-                }
-            }
         }
 
         // collect objects for remove
@@ -293,7 +230,7 @@ Economics.Scene.prototype = {
      */
     selectAll: function () {
         var self = this;
-        var allObjects = [this.nodes, this.edges, this.buses, this.contours, this.links];
+        var allObjects = [this.edges, this.links];
         allObjects.forEach(function (setObjects) {
             setObjects.forEach(function (obj) {
                 if (!obj.is_selected) {
@@ -363,7 +300,7 @@ Economics.Scene.prototype = {
         if (this.selected_objects.length == 1) {
             var obj = this.selected_objects[0];
             
-            if (obj instanceof Economics.ModelEdge || obj instanceof Economics.ModelBus || obj instanceof Economics.ModelContour) { /* @todo add contour and bus */
+            if (obj instanceof Economics.ModelEdge) {
                 for (idx in obj.points) {
                     this.line_points.push({pos: obj.points[idx], idx: idx});
                 }
@@ -432,10 +369,6 @@ Economics.Scene.prototype = {
             } else if (event.which == KeyCode.Key2) {
                 this.edit.toolEdge().click()
             } else if (event.which == KeyCode.Key3) {
-                this.edit.toolBus().click()
-            } else if (event.which == KeyCode.Key4) {
-                this.edit.toolContour().click()
-            } else if (event.which == KeyCode.Key5) {
                 this.edit.toolLink().click()
             } else if (event.which == KeyCode.Delete) {
                 this.edit.toolDelete().click();
@@ -482,9 +415,9 @@ Economics.Scene.prototype = {
 
         this.focused_object = null;
         this.edge_data.source = null; this.edge_data.target = null;
-        
+
         this.bus_data.source = null;
-        
+
         this.resetEdgeMode();
     },
     
@@ -512,7 +445,7 @@ Economics.Scene.prototype = {
      */
     revertDragPoint: function(idx) {
 
-        if (this.edit_mode != EconomicsEditMode.EconomicsModeEdge && this.edit_mode != EconomicsEditMode.EconomicsModeBus && this.edit_mode != EconomicsEditMode.EconomicsModeContour) {
+        if (this.edit_mode != EconomicsEditMode.EconomicsModeEdge) {
             EconomicsDebug.error('Work with drag point in incorrect edit mode');
             return;
         }
@@ -541,7 +474,7 @@ Economics.Scene.prototype = {
         }
         
         var edge = this.selected_objects[0];
-        if (!(edge instanceof Economics.ModelEdge) && !(edge instanceof Economics.ModelBus) && !(edge instanceof Economics.ModelContour)) {
+        if (!(edge instanceof Economics.ModelEdge)) {
             EconomicsDebug.error("Unknown type of selected object");
             return;
         }
@@ -577,7 +510,7 @@ Economics.Scene.prototype = {
             objects[0].sc_type & sc_type_node ?
                 sc_type_node : 0;
         return (objects.every(function (obj) {
-            return ((obj.sc_type & typeMask) && !(obj instanceof Economics.ModelContour) && !(obj instanceof Economics.ModelBus));
+            return (obj.sc_type & typeMask);
         }))
     },
 

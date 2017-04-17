@@ -36,20 +36,13 @@ EconomicsSelectListener.prototype = {
     },
 
     onMouseDoubleClick: function (x, y) {
-        if (this.scene.pointed_object && !(this.scene.pointed_object instanceof Economics.ModelContour)) {
-            return false;
-        }
-        this.scene.commandManager.execute(new EconomicsCommandCreateNode(x, y, this.scene));
-        return true;
+        return false;
     },
 
     onMouseDownObject: function(obj) {
         this.offsetObject = obj;
         this.scene.focused_object = obj;
         this.position = this.scene.focused_object.position.clone();
-        if (obj instanceof Economics.ModelContour || obj instanceof Economics.ModelBus) {
-            obj.previousPoint = new Economics.Vector2(this.scene.mouse_pos.x, this.scene.mouse_pos.y);
-        }
         if (d3.event.ctrlKey){
             this.selectObject(obj);
             this.onMouseUpObject(obj); // do not move object after select with ctrl
