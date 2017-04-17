@@ -1,9 +1,7 @@
 var EconomicsLayoutObjectType = {
-    Node: 0,
-    Edge: 1,
-    Link: 2,
-    Contour: 3,
-    DotPoint: 4
+    ModelNULL: 0,
+    ModelProcedure: 1,
+    ModelAction: 2
 };
 
 // Layout algorithms

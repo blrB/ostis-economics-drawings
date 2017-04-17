@@ -44,31 +44,31 @@ Economics.TemplateFinder.prototype = {
 
     findSourceAndTargetByModel: function (model) {
 
-        var action = this.scene.actions;
-        var procedures = this.scene.procedures;
+        // var action = this.scene.actions;
+        // var procedures = this.scene.procedures;
 
         var source;
         var target;
 
-        source = action.find(function (item) {
+        source = this.scene.links.find(function (item) {
             return item.addr == model.source;
         });
 
-        if (!source) {
-            source = procedures.find(function (item) {
-                return item.addr == model.source;
-            });
-        }
+        // if (!source) {
+        //     source = procedures.find(function (item) {
+        //         return item.addr == model.source;
+        //     });
+        // }
 
-        target = action.find(function (item) {
+        target = this.scene.links.find(function (item) {
             return item.addr == model.target;
         });
 
-        if (!target) {
-            target = procedures.find(function (item) {
-                return item.addr == model.target;
-            });
-        }
+        // if (!target) {
+        //     target = procedures.find(function (item) {
+        //         return item.addr == model.target;
+        //     });
+        // }
 
         return {
             source: source,
@@ -97,10 +97,11 @@ function templateTest() {
                     link.addr = model.addr;
                     link.setContent(model.labelString);
                     if (model instanceof Economics.ModelProcedure) {
-                        scene.appendProcedure(link);
+                        link.type = EconomicsLayoutObjectType.ModelProcedure;
                     } else if (model instanceof Economics.ModelAction) {
-                        scene.appendAction(link);
+                        link.type = EconomicsLayoutObjectType.ModelAction;
                     }
+                    scene.appendObject(link);
             } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
                     var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);

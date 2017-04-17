@@ -195,8 +195,12 @@ Economics.Render.prototype = {
                 })
         };
 
+        var links = this.scene.links.filter(function (object) {
+            return !object.type;
+        });
+
         // add links that haven't visual
-        this.d3_links = this.d3_links.data(this.scene.links, function (d) {
+        this.d3_links = this.d3_links.data(links, function (d) {
             return d.id;
         });
 
@@ -221,12 +225,15 @@ Economics.Render.prototype = {
                 return '<div id="link_' + self.containerId + '_' + d.id + '" class=\"EconomicsLinkContainer\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
             });
 
-
         eventsWrap(g);
 
         this.d3_links.exit().remove();
 
-        this.d3_actions = this.d3_actions.data(this.scene.actions, function (d) {
+        var actions = this.scene.links.filter(function (object) {
+            return object.type === EconomicsLayoutObjectType.ModelAction;
+        });
+
+        this.d3_actions = this.d3_actions.data(actions, function (d) {
             return d.id;
         });
 
@@ -257,7 +264,11 @@ Economics.Render.prototype = {
 
         this.d3_actions.exit().remove();
 
-        this.d3_procedures = this.d3_procedures.data(this.scene.procedures, function (d) {
+        var procedures = this.scene.links.filter(function (object) {
+            return object.type === EconomicsLayoutObjectType.ModelProcedure;
+        });
+
+        this.d3_procedures = this.d3_procedures.data(procedures, function (d) {
             return d.id;
         });
 
