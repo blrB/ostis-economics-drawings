@@ -24,6 +24,7 @@ module.exports = function() {
                     components + 'src/economics-tree.js',
                     components + 'src/economics-struct.js',
                     components + 'src/economics-object-creator.js',
+                    components + 'src/economics-template-finder.js',
                     components + 'src/economics-component.js',
                     components + 'src/listener/economics-mode-bus.js',
                     components + 'src/listener/economics-mode-contour.js',

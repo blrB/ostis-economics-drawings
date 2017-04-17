@@ -61,6 +61,10 @@ Economics.Scene = function(options) {
     this.contours = [];
     this.buses = [];
 
+    this.actions = [];
+    this.procedures = [];
+    this.arrows = [];
+
     this.objects = Object.create(null);
     this.edit_mode = EconomicsEditMode.EconomicsModeSelect;
     
@@ -121,6 +125,16 @@ Economics.Scene.prototype = {
         link.scene = this;
     },
 
+    appendProcedure: function(procedure) {
+        this.procedures.push(procedure);
+        procedure.scene = this;
+    },
+
+    appendAction: function(action) {
+        this.actions.push(action);
+        action.scene = this;
+    },
+
     /**
      * Appends new sc.g-edge to scene
      * @param {Economics.ModelEdge} edge Edge to append
@@ -160,6 +174,10 @@ Economics.Scene.prototype = {
         } else if (obj instanceof Economics.ModelBus) {
             this.appendBus(obj);
             obj.setSource(obj.source);
+        } else if (obj instanceof Economics.ModelAction) {
+            this.appendAction(obj);
+        } else if (obj instanceof Economics.ModelProcedure) {
+            this.appendProcedure(obj);
         }
     },
     
