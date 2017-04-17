@@ -1,13 +1,13 @@
-EconomicsCommandCreateLink = function (x, y, scene) {
+EconomicsCommandCreateProcedure = function (x, y, scene) {
     this.x = x;
     this.y = y;
     this.scene = scene;
     this.link = null;
 };
 
-EconomicsCommandCreateLink.prototype = {
+EconomicsCommandCreateProcedure.prototype = {
 
-    constructor: EconomicsCommandCreateLink,
+    constructor: EconomicsCommandCreateProcedure,
 
     undo: function() {
         if (this.link.is_selected) {

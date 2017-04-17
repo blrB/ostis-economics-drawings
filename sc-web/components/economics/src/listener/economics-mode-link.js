@@ -18,7 +18,7 @@ EconomicsLinkListener.prototype = {
         if (this.scene.pointed_object) {
             return false;
         }
-        this.scene.commandManager.execute(new EconomicsCommandCreateLink(x, y, this.scene));
+        this.scene.commandManager.execute(new EconomicsCommandCreateProcedure(x, y, this.scene));
         return true;
     },
 
