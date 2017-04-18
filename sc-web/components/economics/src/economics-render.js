@@ -484,12 +484,13 @@ Economics.Render.prototype = {
             g.select('rect')
                 .attr('width', function (d) {
                     d.scale.x = Math.min(linkDiv.find('.impl').outerWidth(), 450) + 10;
+                    //d.scale.x = Math.max(d.scale.x, 120);
                     d.scale.x = 120;
                     return d.scale.x ;
                 })
                 .attr('height', function (d) {
-                    d.scale.y = Math.min(linkDiv.outerHeight(), 350);
-                    d.scale.y = 80;
+                    d.scale.y = Math.min(linkDiv.outerHeight(), 350) + 10;
+                    d.scale.y = Math.max(d.scale.y, 80);
                     return d.scale.y ;
                 })
                 .attr('class', function (d) {
