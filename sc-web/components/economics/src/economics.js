@@ -66,6 +66,7 @@ Economics.Editor.prototype = {
             this.resolveControls = params.resolveControls;
 
         this.canEdit = params.canEdit ? true : false;
+        this.finder = params.finder;
         this.initUI();
         
     },
