@@ -19,6 +19,7 @@ Economics.Creator.createProcedure = function(pos, containerId) {
         labelString: containerId
     });
     procedure.setContent("");
+    procedure.type = EconomicsLayoutObjectType.ModelProcedure;
     return procedure;
 };
 Economics.Creator.createAction = function(pos, containerId) {
@@ -29,6 +30,7 @@ Economics.Creator.createAction = function(pos, containerId) {
         containerId: containerId
     });
     action.setContent("");
+    action.type = EconomicsLayoutObjectType.ModelAction;
     return action;
 };
 

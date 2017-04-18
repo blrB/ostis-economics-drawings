@@ -256,7 +256,7 @@ Economics.Render.prototype = {
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div id="action_' + self.containerId + '_' + d.id + '" class=\"EconomicsAction\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
+                return '<div id="action_' + self.containerId + '_' + d.id + '" sc_addr="' + d.addr + '" class=\"EconomicsAction sc-no-default-cmd ui-no-tooltip \"><div id="' + d.containerId + '" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -288,11 +288,17 @@ Economics.Render.prototype = {
             .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
             .attr("width", "100%")
             .attr("height", "100%")
+            .attr("sc_addr", function (d) {
+                return d.addr;
+            })
+            .attr('class', function () {
+                return "sc-no-default-cmd ui-no-tooltip";
+            })
             .append("xhtml:link_body")
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div style="vertical-align: middle;" id="procedure_' + self.containerId + '_' + d.id + '" class=\"EconomicsProcedure\"><div id="' + d.containerId + '" style="display: inline-block;" class="impl"></div></div>';
+                return '<div style="vertical-align: middle;" id="procedure_' + self.containerId + '_' + d.id + '" sc_addr="' + d.addr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + d.containerId + '" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -431,7 +437,7 @@ Economics.Render.prototype = {
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
                 }).attr("sc_addr", function (d) {
-                return d.sc_addr;
+                return d.addr;
             });
 
             g.selectAll(function () {
@@ -496,7 +502,7 @@ Economics.Render.prototype = {
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
                 }).attr("sc_addr", function (d) {
-                return d.sc_addr;
+                return d.addr;
             });
 
             g.append('svg:line')

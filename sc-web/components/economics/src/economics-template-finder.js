@@ -67,14 +67,14 @@ Economics.TemplateFinder.prototype = {
                 if (model instanceof Economics.ModelProcedure || model instanceof Economics.ModelAction) {
                     var x = getRandomInt0to100();
                     var y = getRandomInt0to100();
-                    var link = Economics.Creator.createLink(new Economics.Vector3(x, y, 0), '');
+                    var link;
+                    if (model instanceof Economics.ModelProcedure) {
+                        link = Economics.Creator.createProcedure(new Economics.Vector3(x, y, 0), '');
+                    } else if (model instanceof Economics.ModelAction) {
+                        link = Economics.Creator.createAction(new Economics.Vector3(x, y, 0), '');
+                    }
                     link.addr = model.addr;
                     link.setContent(model.labelString);
-                    if (model instanceof Economics.ModelProcedure) {
-                        link.type = EconomicsLayoutObjectType.ModelProcedure;
-                    } else if (model instanceof Economics.ModelAction) {
-                        link.type = EconomicsLayoutObjectType.ModelAction;
-                    }
                     scene.appendObject(link);
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);

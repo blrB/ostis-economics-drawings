@@ -577,14 +577,14 @@ Economics.ModelEdge.prototype.calculateDotPos = function(pos) {
 };
 
 Economics.ModelProcedure = function(options) {
-    Economics.ModelObject.call(this, options);
+    Economics.ModelLink.call(this, options);
 
     this.labelAddr = options.labelAddr;
     this.labelString = options.labelString;
     this.addr = options.addr;
 };
 
-Economics.ModelProcedure.prototype = Object.create(Economics.ModelObject.prototype);
+Economics.ModelProcedure.prototype = Object.create(Economics.ModelLink.prototype);
 
 Economics.ModelProcedure.getAllObjectsByContour = function(contour) {
 
@@ -639,14 +639,14 @@ Economics.ModelProcedure.getAllObjectsByContour = function(contour) {
 };
 
 Economics.ModelAction = function(options) {
-    Economics.ModelObject.call(this, options);
+    Economics.ModelLink.call(this, options);
 
     this.labelAddr = options.labelAddr;
     this.labelString = options.labelString;
     this.addr = options.addr;
 };
 
-Economics.ModelAction.prototype = Object.create( Economics.ModelObject.prototype );
+Economics.ModelAction.prototype = Object.create( Economics.ModelLink.prototype );
 
 Economics.ModelAction.getAllObjectsByContour = function(contour) {
 
@@ -698,6 +698,48 @@ Economics.ModelAction.getAllObjectsByContour = function(contour) {
             resolve([]);
         });
     });
+};
+
+// TODO make it better
+Economics.ModelAction.prototype.getConnectionPos = function(from, dotPos) {
+
+    var y2 = this.scale.y * 0.5,
+        x2 = this.scale.x * 0.5;
+
+    var radius = 70;
+    var magic = 25;
+
+    var left = this.position.x - x2 - magic,
+        top = this.position.y - y2 - magic,
+        right = this.position.x + x2 + radius,
+        bottom = this.position.y + y2 + radius;
+
+    console.log(left + " " + top + " " + right + " " + bottom)
+
+    var points = Economics.Algorithms.polyclip([
+        new Economics.Vector2(left, top),
+        new Economics.Vector2(right, top),
+        new Economics.Vector2(right, bottom),
+        new Economics.Vector2(left, bottom)
+    ], from, this.position);
+
+    if (points.length == 0)
+        throw "There are no intersection";
+
+    // find shortes
+    var dMin = null,
+        res = null;
+    for (var i = 0; i < points.length; ++i) {
+        var p = points[i];
+        var d = Economics.Math.distanceSquared(p, from);
+
+        if (dMin === null || dMin > d) {
+            dMin = d;
+            res = p;
+        }
+    }
+
+    return res ? new Economics.Vector3(res.x, res.y, this.position.z) : this.position;
 };
 
 Economics.ModelArrow = function(options) {
