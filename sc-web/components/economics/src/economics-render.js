@@ -283,6 +283,12 @@ Economics.Render.prototype = {
             .attr('class', 'sc-no-default-cmd ui-no-tooltip')
             .style('fill','rgb(149,174,206)');
 
+        g.append('svg:line')
+            .attr('class', "firstLine");
+
+        g.append('svg:line')
+            .attr('class', "secondLine");
+
 
         g.append('svg:foreignObject')
             .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
@@ -489,23 +495,24 @@ Economics.Render.prototype = {
 
             g.select('rect')
                 .attr('width', function (d) {
-                    d.scale.x = Math.min(linkDiv.find('.impl').outerWidth(), 450) + 10;
+                    // d.scale.x = Math.min(linkDiv.find('.impl').outerWidth(), 450) + 10;
                     //d.scale.x = Math.max(d.scale.x, 120);
                     d.scale.x = 120;
                     return d.scale.x ;
                 })
                 .attr('height', function (d) {
-                    d.scale.y = Math.min(linkDiv.outerHeight(), 350) + 10;
+                    // d.scale.y = Math.min(linkDiv.outerHeight(), 350) + 10;
                     d.scale.y = Math.max(d.scale.y, 80);
                     return d.scale.y ;
                 })
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
-                }).attr("sc_addr", function (d) {
+                })
+                .attr("sc_addr", function (d) {
                 return d.addr;
-            });
+                });
 
-            g.append('svg:line')
+            g.select('.firstLine')
                 .attr('x1', function (d) {
                     return d.scale.x - 15;
                 })
@@ -519,7 +526,8 @@ Economics.Render.prototype = {
                     return d.scale.y-80;
                 })
                 .style("stroke", "rgb(0,0,0)");
-            g.append('svg:line')
+
+            g.select('.secondLine')
                 .attr('x1', function (d) {
                     return d.scale.x - 105;
                 })
