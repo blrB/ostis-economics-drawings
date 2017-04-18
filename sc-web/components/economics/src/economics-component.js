@@ -24,9 +24,11 @@ EconomicsComponent = {
 var economicsViewerWindow = function(sandbox) {
 
     this.domContainer = sandbox.container;
+    this.windowId = sandbox.container.replace(/.*?_(.*)/, '$1');
     this.sandbox = sandbox;
     this.tree = new Economics.Tree();
     this.editor = new Economics.Editor();
+    this.finder = new Economics.TemplateFinder();
     
     var self = this;
     if (sandbox.is_struct) {
@@ -59,9 +61,13 @@ var economicsViewerWindow = function(sandbox) {
             },
             canEdit: this.sandbox.canEdit(),
             resolveControls: this.sandbox.resolveElementsAddr,
+            finder: this.finder
         }
     );
 
+    this.finder.init({
+        editor: this.editor
+    });
 
     this.receiveData = function(data) {
         var dfd = new jQuery.Deferred();
@@ -69,9 +75,10 @@ var economicsViewerWindow = function(sandbox) {
         /*this.collectTriples(data);
         this.tree.build(this.triples);*/
         // this._buildGraph(data);
-        let contour = JSON.parse(data).keywords[0].addr;
 
-        templateTest(contour);
+        self.finder.contour = JSON.parse(data).keywords[0].addr;
+        self.finder.drawByContour();
+
         dfd.resolve();
         return dfd.promise();
     };
@@ -179,13 +186,7 @@ var economicsViewerWindow = function(sandbox) {
     };
 
     this.applyTranslation = function(namesMap) {
-        for (addr in namesMap) {
-            var obj = this.editor.scene.getObjectByScAddr(addr);
-            if (obj) {
-                obj.text = namesMap[addr];
-            }
-        }
-        this.editor.render.updateTexts();
+        // TODO
     };
     
     
@@ -199,37 +200,22 @@ var economicsViewerWindow = function(sandbox) {
     this.sandbox.eventApplyTranslation = $.proxy(this.applyTranslation, this);
     this.sandbox.eventStructUpdate = $.proxy(this.receiveData, this);
 
-    //this.sandbox.updateContent();
-    // TODO delete in master
-    console.log(sandbox);
-    testEditor = this.editor;
+    let question_addr = this.windowId;
 
-    let question_addr = sandbox.container.replace(/.*?_(.*)/, '$1');
-
-    new Promise(resolve=>{
+    // find contour and draw
+    new Promise(resolve => {
         SCWeb.core.Server.getAnswerTranslated(question_addr, this.sandbox.keynodes.format_scs_json, function(answer){
             resolve(answer.link);
         })
-    })
-        // .then(link => )
-        .then(link => {
+    }).then(link => {
             window.sctpClient.get_link_content(link)
                 .done(data=>self.receiveData(data))
-        });
-        // .then(()=>self.sandbox.updateContent());
-
-
+    });
 
     // subscripe component
-    var startIdIndex = 7;
-    this.window_id = this.domContainer.substring(startIdIndex) + '_' + this.sandbox.command_state.format;
+    this.window_id = this.windowId + '_' + this.sandbox.command_state.format;
     SCWeb.ui.KeyboardHandler.subscribeWindow(this.window_id, this.editor.keyboardCallbacks);
     SCWeb.ui.OpenComponentHandler.subscribeComponent(this.window_id, this.editor.openComponentCallbacks);
 };
 
 SCWeb.core.ComponentManager.appendComponentInitialize(EconomicsComponent);
-
-
-// TODO delete from master
-
-var testEditor;

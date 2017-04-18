@@ -3,6 +3,7 @@ Economics.TemplateFinder = function () {
     this.contour = null;
     this.editor = null;
     this.scene = null;
+    this.render = null;
     this.templates = [];
 };
 
@@ -14,6 +15,7 @@ Economics.TemplateFinder.prototype = {
         this.contour = params.contour;
         this.editor = params.scene;
         this.scene = params.editor.scene;
+        this.render = params.editor.render;
         this.templates = [];
         this.templates.push(Economics.ModelProcedure);
         this.templates.push(Economics.ModelAction);
@@ -42,52 +44,24 @@ Economics.TemplateFinder.prototype = {
         return templatePromises;
     },
 
-    findSourceAndTargetByModel: function (model) {
+    drawByContour: function () {
 
-        // var action = this.scene.actions;
-        // var procedures = this.scene.procedures;
+        var self = this;
 
-        var source;
-        var target;
+        var templatePromises = this.getAllObjectsByContour();
 
-        source = this.scene.links.find(function (item) {
-            return item.addr == model.source;
+        Promise.all(templatePromises).then(function (data) {
+            self.viewInEditor(data)
         });
+    },
 
-        // if (!source) {
-        //     source = procedures.find(function (item) {
-        //         return item.addr == model.source;
-        //     });
-        // }
+    viewInEditor: function(data) {
 
-        target = this.scene.links.find(function (item) {
-            return item.addr == model.target;
-        });
-
-        // if (!target) {
-        //     target = procedures.find(function (item) {
-        //         return item.addr == model.target;
-        //     });
-        // }
-
-        return {
-            source: source,
-            target: target
+        function getRandomInt0to100() {
+            return Math.floor(Math.random() * (100));
         }
-    }
 
-};
-
-//TODO delete test
-
-function templateTest(addr) {
-
-    function getRandomInt0to100() {
-        return Math.floor(Math.random() * (100));
-    }
-
-    function viewInEditor(data, finder) {
-        var scene = finder.scene;
+        var scene = this.scene;
         data.forEach(function (template) {
             template.forEach(function (model) {
                 if (model instanceof Economics.ModelProcedure || model instanceof Economics.ModelAction) {
@@ -105,38 +79,32 @@ function templateTest(addr) {
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
                     var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
-                    console.log(edge);
                     scene.appendObject(edge);
                 }
             })
         });
 
-        testEditor.scene.layout();
-        testEditor.render.update();
-    }
+        this.scene.layout();
+        this.render.update();
+    },
 
-    function startFinder(addr) {
-        finder = new Economics.TemplateFinder();
-        finder.init({
-            contour: addr,
-            editor: testEditor
+    findSourceAndTargetByModel: function (model) {
+
+        var source;
+        var target;
+
+        source = this.scene.links.find(function (item) {
+            return item.addr == model.source;
         });
 
-        var templatePromises = finder.getAllObjectsByContour();
-
-        Promise.all(templatePromises).then(function (data) {
-            console.log(data);
-            viewInEditor(data, finder)
+        target = this.scene.links.find(function (item) {
+            return item.addr == model.target;
         });
-    }
-    console.log(addr);
-    if (addr) {
-        startFinder(addr)
-    }else{
-        SCWeb.core.Server.resolveScAddr(['test_economics'], function (keynodes) {
-            contour = keynodes['test_economics'];
 
-            startFinder(contour)
-        });
+        return {
+            source: source,
+            target: target
+        }
     }
-}
+
+};
