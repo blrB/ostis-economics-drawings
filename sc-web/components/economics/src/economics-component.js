@@ -68,8 +68,10 @@ var economicsViewerWindow = function(sandbox) {
     
         /*this.collectTriples(data);
         this.tree.build(this.triples);*/
-        this._buildGraph(data);
+        // this._buildGraph(data);
+        let contour = JSON.parse(data).keywords[0].addr;
 
+        templateTest(contour);
         dfd.resolve();
         return dfd.promise();
     };
@@ -195,12 +197,28 @@ var economicsViewerWindow = function(sandbox) {
     this.sandbox.eventDataAppend = $.proxy(this.receiveData, this);
     this.sandbox.eventGetObjectsToTranslate = $.proxy(this.getObjectsToTranslate, this);
     this.sandbox.eventApplyTranslation = $.proxy(this.applyTranslation, this);
-    this.sandbox.eventStructUpdate = $.proxy(this.eventStructUpdate, this);
+    this.sandbox.eventStructUpdate = $.proxy(this.receiveData, this);
 
     //this.sandbox.updateContent();
     // TODO delete in master
     console.log(sandbox);
     testEditor = this.editor;
+
+    let question_addr = sandbox.container.replace(/.*?_(.*)/, '$1');
+
+    new Promise(resolve=>{
+        SCWeb.core.Server.getAnswerTranslated(question_addr, this.sandbox.keynodes.format_scs_json, function(answer){
+            resolve(answer.link);
+        })
+    })
+        // .then(link => )
+        .then(link => {
+            window.sctpClient.get_link_content(link)
+                .done(data=>self.receiveData(data))
+        });
+        // .then(()=>self.sandbox.updateContent());
+
+
 
     // subscripe component
     var startIdIndex = 7;

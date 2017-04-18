@@ -22,11 +22,11 @@ Economics.TemplateFinder.prototype = {
 
     getAllObjectsByContour: function () {
 
-        if (this.contour === null){
+        if (this.contour === null) {
             throw 'contour === null in Economics.TemplateFinder';
         }
 
-        if (this.templates === []){
+        if (this.templates === []) {
             throw 'templates === [] in Economics.TemplateFinder';
         }
 
@@ -80,7 +80,7 @@ Economics.TemplateFinder.prototype = {
 
 //TODO delete test
 
-function templateTest() {
+function templateTest(addr) {
 
     function getRandomInt0to100() {
         return Math.floor(Math.random() * (100));
@@ -102,7 +102,7 @@ function templateTest() {
                         link.type = EconomicsLayoutObjectType.ModelAction;
                     }
                     scene.appendObject(link);
-            } else if (model instanceof Economics.ModelArrow) {
+                } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
                     var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
                     console.log(edge);
@@ -115,12 +115,10 @@ function templateTest() {
         testEditor.render.update();
     }
 
-    SCWeb.core.Server.resolveScAddr(['test_economics'], function (keynodes) {
-        contour = keynodes['test_economics'];
-
+    function startFinder(addr) {
         finder = new Economics.TemplateFinder();
         finder.init({
-            contour: contour,
+            contour: addr,
             editor: testEditor
         });
 
@@ -130,5 +128,15 @@ function templateTest() {
             console.log(data);
             viewInEditor(data, finder)
         });
-    });
+    }
+    console.log(addr);
+    if (addr) {
+        startFinder(addr)
+    }else{
+        SCWeb.core.Server.resolveScAddr(['test_economics'], function (keynodes) {
+            contour = keynodes['test_economics'];
+
+            startFinder(contour)
+        });
+    }
 }
