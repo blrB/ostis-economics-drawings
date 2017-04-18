@@ -113,6 +113,7 @@ Economics.Editor.prototype = {
             }
             if (self.resolveControls)
                 self.resolveControls(tools_container);
+            self.hideTool(self.toolIntegrate());
         });
         this.scene.event_selection_changed = function() {
             self.onSelectionChanged();
@@ -464,11 +465,12 @@ Economics.Editor.prototype = {
         });
 
         this.toolIntegrate().click(function() {
-            self._disableTool(self.toolIntegrate());
-            if (self.translateToSc)
-                self.translateToSc(self.scene, function() {
-                    self._enableTool(self.toolIntegrate());
-                });
+            // self._disableTool(self.toolIntegrate());
+            // if (self.translateToSc)
+            //     self.translateToSc(self.scene, function() {
+            //         self._enableTool(self.toolIntegrate());
+            //     });
+            // TODO
         });
         
         this.toolZoomIn().click(function() {
