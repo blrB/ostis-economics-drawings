@@ -700,46 +700,16 @@ Economics.ModelAction.getAllObjectsByContour = function(contour) {
     });
 };
 
-// TODO make it better
-Economics.ModelAction.prototype.getConnectionPos = function(from, dotPos) {
+Economics.ModelAction.prototype.getConnectionPos = function(from) {
+    var radius = 75;
+    var center = new Economics.Vector3(this.position.x + this.scale.x * 0.5 , this.position.y +this.scale.y * 0.5,0);
+    var result = new Economics.Vector3(0, 0, 0);
 
-    var y2 = this.scale.y * 0.5,
-        x2 = this.scale.x * 0.5;
+    result.copyFrom(from).sub(center).normalize();
+    result.multiplyScalar(radius).add(center);
 
-    var radius = 70;
-    var magic = 25;
+    return result;
 
-    var left = this.position.x - x2 - magic,
-        top = this.position.y - y2 - magic,
-        right = this.position.x + x2 + radius,
-        bottom = this.position.y + y2 + radius;
-
-    console.log(left + " " + top + " " + right + " " + bottom)
-
-    var points = Economics.Algorithms.polyclip([
-        new Economics.Vector2(left, top),
-        new Economics.Vector2(right, top),
-        new Economics.Vector2(right, bottom),
-        new Economics.Vector2(left, bottom)
-    ], from, this.position);
-
-    if (points.length == 0)
-        throw "There are no intersection";
-
-    // find shortes
-    var dMin = null,
-        res = null;
-    for (var i = 0; i < points.length; ++i) {
-        var p = points[i];
-        var d = Economics.Math.distanceSquared(p, from);
-
-        if (dMin === null || dMin > d) {
-            dMin = d;
-            res = p;
-        }
-    }
-
-    return res ? new Economics.Vector3(res.x, res.y, this.position.z) : this.position;
 };
 
 Economics.ModelArrow = function(options) {

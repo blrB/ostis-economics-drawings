@@ -21,7 +21,7 @@ EconomicsCommandCreateProcedure.prototype = {
 
     execute: function() {
         if (this.link == null){
-            this.link = Economics.Creator.createLink(new Economics.Vector3(this.x, this.y, 0), '');
+            this.link = Economics.Creator.createProcedure(new Economics.Vector3(this.x, this.y, 0), '');
             this.link.type = EconomicsLayoutObjectType.ModelProcedure;
             this.scene.appendLink(this.link);
             this.scene.updateRender();
@@ -58,7 +58,7 @@ EconomicsCommandCreateAction.prototype = {
 
     execute: function() {
         if (this.link == null){
-            this.link = Economics.Creator.createLink(new Economics.Vector3(this.x, this.y, 0), '');
+            this.link = Economics.Creator.createAction(new Economics.Vector3(this.x, this.y, 0), '');
             this.link.type = EconomicsLayoutObjectType.ModelAction;
             this.scene.appendLink(this.link);
             this.scene.updateRender();
