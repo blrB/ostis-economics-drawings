@@ -66,10 +66,10 @@ Economics.LayoutAlgorithmForceBased.prototype.start = function() {
         
 		if (edge.source.type == EconomicsLayoutObjectType.DotPoint ||
 			edge.target.type == EconomicsLayoutObjectType.DotPoint) {
-			return d + 50;
+			return d + 250;
 		}
 
-		return 100 + d;
+		return 500 + d;
 	})
 	.linkStrength(function(edge){
 		if (edge.source.type == EconomicsLayoutObjectType.DotPoint ||
