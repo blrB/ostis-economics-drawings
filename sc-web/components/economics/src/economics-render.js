@@ -256,7 +256,8 @@ Economics.Render.prototype = {
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div id="action_' + self.containerId + '_' + d.id + '" sc_addr="' + d.addr + '" class=\"EconomicsAction sc-no-default-cmd ui-no-tooltip \"><div id="' + d.containerId + '" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
+                var id = 'action_' + self.containerId + '_' + d.id;
+                return '<div id="' + id + '" sc_addr="' + d.addr + '" class=\"EconomicsAction sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -304,7 +305,8 @@ Economics.Render.prototype = {
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
-                return '<div style="vertical-align: middle;" id="procedure_' + self.containerId + '_' + d.id + '" sc_addr="' + d.addr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + d.containerId + '" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
+                var id = 'procedure_' + self.containerId + '_' + d.id;
+                return '<div style="vertical-align: middle;" id="' + id + '" sc_addr="' + d.addr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -403,31 +405,11 @@ Economics.Render.prototype = {
 
             if (!d.need_observer_sync && d.contentLoaded) return; // do nothing
 
-            if (!d.contentLoaded) {
-                var links = {};
-                links[d.containerId] = d.sc_addr;
-                self.sandbox.createViewersForScLinks(links);
+            var linkDiv = $(document.getElementById("action_" + self.containerId + "_" + d.id + "_text"));
 
-                d.contentLoaded = true;
-            }
-            else
-                d.need_observer_sync = false;
+            linkDiv.html(d.content);
 
-            var linkDiv = $(document.getElementById("action_" + self.containerId + "_" + d.id));
-            if (!d.sc_addr) {
-                linkDiv.find('.impl').html(d.content);
-            } else {
-                if (d.content != "") {
-                    linkDiv.find('.impl').html(d.content);
-                } else {
-                    d.content = linkDiv.find('.impl').html();
-                    if (d.content != "") {
-                        d.setAutoType();
-                    }
-                }
-            }
-
-            var g = d3.select(this)
+            var g = d3.select(this);
 
             g.select('circle')
                 .attr('cx', function (d) {
@@ -467,42 +449,27 @@ Economics.Render.prototype = {
 
             if (!d.need_observer_sync && d.contentLoaded) return; // do nothing
 
-            if (!d.contentLoaded) {
-                var links = {};
-                links[d.containerId] = d.sc_addr;
-                self.sandbox.createViewersForScLinks(links);
+            var linkDiv = $(document.getElementById("procedure_" + self.containerId + "_" + d.id + "_text"));
 
-                d.contentLoaded = true;
-            }
-            else
-                d.need_observer_sync = false;
+            linkDiv.html(d.content);
 
-            var linkDiv = $(document.getElementById("procedure_" + self.containerId + "_" + d.id));
-            if (!d.sc_addr) {
-                linkDiv.find('.impl').html(d.content);
-            } else {
-                if (d.content != "") {
-                    linkDiv.find('.impl').html(d.content);
-                } else {
-                    d.content = linkDiv.find('.impl').html();
-                    if (d.content != "") {
-                        d.setAutoType();
-                    }
-                }
-            }
+            var g = d3.select(this);
 
-            var g = d3.select(this)
+            var width;
+            var height;
+            var offset = 15;
 
             g.select('rect')
                 .attr('width', function (d) {
-                    // d.scale.x = Math.min(linkDiv.find('.impl').outerWidth(), 450) + 10;
-                    //d.scale.x = Math.max(d.scale.x, 120);
-                    d.scale.x = 120;
+                    width = Math.min(linkDiv.outerWidth(), 300) + offset* 2;
+                    width = Math.max(width, 120);
+                    d.scale.x = width;
                     return d.scale.x ;
                 })
                 .attr('height', function (d) {
-                    // d.scale.y = Math.min(linkDiv.outerHeight(), 350) + 10;
-                    d.scale.y = Math.max(d.scale.y, 80);
+                    height = Math.min(linkDiv.outerHeight(), 200) + 10;
+                    height = Math.max(height, 80);
+                    d.scale.y = height;
                     return d.scale.y ;
                 })
                 .attr('class', function (d) {
@@ -514,31 +481,31 @@ Economics.Render.prototype = {
 
             g.select('.firstLine')
                 .attr('x1', function (d) {
-                    return d.scale.x - 15;
+                    return d.scale.x - offset;
                 })
                 .attr('x2', function (d) {
-                    return d.scale.x - 15;
+                    return d.scale.x - offset;
                 })
                 .attr('y1', function (d) {
                     return d.scale.y;
                 })
                 .attr('y2', function (d) {
-                    return d.scale.y-80;
+                    return d.scale.y - height;
                 })
                 .style("stroke", "rgb(0,0,0)");
 
             g.select('.secondLine')
                 .attr('x1', function (d) {
-                    return d.scale.x - 105;
+                    return d.scale.x - width + offset;
                 })
                 .attr('x2', function (d) {
-                    return d.scale.x - 105;
+                    return d.scale.x - width + offset;
                 })
                 .attr('y1', function (d) {
                     return d.scale.y;
                 })
                 .attr('y2', function (d) {
-                    return d.scale.y-80;
+                    return d.scale.y - height;
                 })
                 .style("stroke", "rgb(0,0,0)");
 
