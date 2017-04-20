@@ -22,6 +22,7 @@ Economics.Creator.createProcedure = function(pos, containerId) {
     procedure.type = EconomicsLayoutObjectType.ModelProcedure;
     return procedure;
 };
+
 Economics.Creator.createAction = function(pos, containerId) {
     var action = new Economics.ModelAction({
         position: pos.clone(),
@@ -32,6 +33,18 @@ Economics.Creator.createAction = function(pos, containerId) {
     action.setContent("");
     action.type = EconomicsLayoutObjectType.ModelAction;
     return action;
+};
+
+Economics.Creator.createRegulator = function(pos, containerId) {
+    var regulator = new Economics.ModelRegulator({
+        position: pos.clone(),
+        scale: new Economics.Vector2(50, 50),
+        sc_type: sc_type_link,
+        containerId: containerId
+    });
+    regulator.setContent("");
+    // TODO regulator.type = EconomicsLayoutObjectType.ModelRegulator;
+    return regulator;
 };
 
 /**

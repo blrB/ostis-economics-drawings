@@ -20,6 +20,7 @@ Economics.TemplateFinder.prototype = {
         this.templates.push(Economics.ModelProcedure);
         this.templates.push(Economics.ModelAction);
         this.templates.push(Economics.ModelArrow);
+        this.templates.push(Economics.ModelRegulator);
     },
 
     getAllObjectsByContour: function () {
@@ -64,9 +65,9 @@ Economics.TemplateFinder.prototype = {
         var scene = this.scene;
         data.forEach(function (template) {
             template.forEach(function (model) {
+                var x = getRandomInt0to100();
+                var y = getRandomInt0to100();
                 if (model instanceof Economics.ModelProcedure || model instanceof Economics.ModelAction) {
-                    var x = getRandomInt0to100();
-                    var y = getRandomInt0to100();
                     var link;
                     if (model instanceof Economics.ModelProcedure) {
                         link = Economics.Creator.createProcedure(new Economics.Vector3(x, y, 0), '');
@@ -79,6 +80,16 @@ Economics.TemplateFinder.prototype = {
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
                     var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
+                    scene.appendObject(edge);
+                } else if (model instanceof Economics.ModelRegulatorHelper) {
+                    var object = finder.findSourceAndTargetByModel(model);
+                    if (!object.target) {
+                        object.target = Economics.Creator.createRegulator(new Economics.Vector3(x, y, 0), '');
+                        object.target.addr = model.target;
+                        object.target.setContent(model.labelString);
+                        scene.appendObject(object.target);
+                    }
+                    var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdgeRegulator);
                     scene.appendObject(edge);
                 }
             })

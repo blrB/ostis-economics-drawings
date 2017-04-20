@@ -1,7 +1,8 @@
 var EconomicsLayoutObjectType = {
     ModelNULL: 0,
     ModelProcedure: 1,
-    ModelAction: 2
+    ModelAction: 2,
+    ModelRegulator: 3
 };
 
 // Layout algorithms

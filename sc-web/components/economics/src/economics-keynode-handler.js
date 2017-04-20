@@ -3,6 +3,7 @@ EconomicsKeynodesHandler = {
     systemIds: [
         'nrel_goto',
         'nrel_inclusion',
+        'nrel_regulator',
         'concept_administrative_procedure',
         'question'
     ],

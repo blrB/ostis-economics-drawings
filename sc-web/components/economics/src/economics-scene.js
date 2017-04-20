@@ -40,6 +40,7 @@ var KeyCode = {
 };
 
 var EconomicsTypeEdgeNow = sc_type_arc_pos_const_perm;
+var EconomicsTypeEdgeRegulator = sc_type_arc_pos_const_perm;
 
 Economics.Scene = function(options) {
 

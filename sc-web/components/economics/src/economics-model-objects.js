@@ -595,7 +595,7 @@ Economics.ModelProcedure.getAllObjectsByContour = function(contour) {
                     sc_type_arc_common | sc_type_const,
                     sc_type_node | sc_type_const,
                     sc_type_arc_pos_const_perm,
-                    parseInt(contour)
+                    EconomicsKeynodesHandler.scKeynodes.nrel_inclusion
                 ],
                 {"labelAddr": 2}),
             SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
@@ -657,7 +657,7 @@ Economics.ModelAction.getAllObjectsByContour = function(contour) {
                     sc_type_arc_common | sc_type_const,
                     sc_type_node | sc_type_const,
                     sc_type_arc_pos_const_perm,
-                    parseInt(contour)
+                    EconomicsKeynodesHandler.scKeynodes.nrel_inclusion
                 ],
                 {"labelAddr": 2}),
             SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
@@ -761,6 +761,89 @@ Economics.ModelArrow.getAllObjectsByContour = function(contour) {
             resolve(procedures);
         }).fail(function () {
             console.log("fail in Economics.ModelArrow.getAllObjectsByContour");
+            resolve([]);
+        });
+    });
+};
+
+Economics.ModelRegulatorHelper = function(options) {
+
+    this.labelString = options.labelString;
+    this.source = options.source;
+    this.target = options.target;
+};
+
+Economics.ModelRegulator = function(options) {
+    Economics.ModelLink.call(this, options);
+
+    this.labelString = options.labelString;
+    this.addr = options.addr;
+};
+
+Economics.ModelRegulator.prototype = Object.create( Economics.ModelLink.prototype );
+
+Economics.ModelRegulator.getAllObjectsByContour = function(contour) {
+
+    return new Promise(function (resolve, reject) {
+        window.sctpClient.iterate_constr(
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_A,
+                [   parseInt(contour),
+                    sc_type_arc_pos_const_perm,
+                    sc_type_node | sc_type_var
+                ],
+                {"source": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_A,
+                [   parseInt(contour),
+                    sc_type_arc_pos_const_perm,
+                    sc_type_node | sc_type_const
+                ],
+                {"target": 2}),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_F_A_F,
+                [   "source",
+                    sc_type_arc_common | sc_type_var,
+                    "target",
+                    sc_type_arc_pos_const_perm,
+                    parseInt(contour)
+                ]),
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_F_A_F,
+                [   "source",
+                    sc_type_arc_common | sc_type_var,
+                    "target",
+                    sc_type_arc_access | sc_type_var | sc_type_arc_pos | sc_type_arc_perm,
+                    EconomicsKeynodesHandler.scKeynodes.nrel_regulator
+                ])
+        ).done(function (results) {
+
+            var objects = [];
+
+            console.log(results);
+
+            for (var template = 0; template < results.results.length; template++) {
+                var source = results.get(template, "source");
+                var target = results.get(template, "target");
+                var object = new Economics.ModelRegulatorHelper({
+                    source: source,
+                    target: target
+                });
+                objects.push(object);
+            }
+
+            var labelAddrs = objects.map(function(object) {
+                return object.target;
+            });
+
+            labelAddrs = labelAddrs.filter(function(item, pos) {
+                return labelAddrs.indexOf(item) == pos;
+            });
+
+            SCWeb.core.Server.resolveIdentifiers(labelAddrs, function (idtfs) {
+                objects.forEach(function (object) {
+                    object.labelString = idtfs[object.target];
+                });
+                resolve(objects);
+            });
+        }).fail(function () {
+            console.log("fail in Economics.ModelRegulator.getAllObjectsByContour");
             resolve([]);
         });
     });
