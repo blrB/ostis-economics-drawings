@@ -816,8 +816,6 @@ Economics.ModelRegulator.getAllObjectsByContour = function(contour) {
 
             var objects = [];
 
-            console.log(results);
-
             for (var template = 0; template < results.results.length; template++) {
                 var source = results.get(template, "source");
                 var target = results.get(template, "target");
