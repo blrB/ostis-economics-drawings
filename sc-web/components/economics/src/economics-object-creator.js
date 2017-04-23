@@ -43,7 +43,7 @@ Economics.Creator.createRegulator = function(pos, containerId) {
         containerId: containerId
     });
     regulator.setContent("");
-    // TODO regulator.type = EconomicsLayoutObjectType.ModelRegulator;
+    regulator.type = EconomicsLayoutObjectType.ModelRegulator;
     return regulator;
 };
 

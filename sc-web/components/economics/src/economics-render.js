@@ -70,6 +70,7 @@ Economics.Render.prototype = {
         this.d3_links = this.d3_container.append('svg:g').selectAll('g');
         this.d3_actions = this.d3_container.append('svg:g').selectAll('g');
         this.d3_procedures = this.d3_container.append('svg:g').selectAll('g');
+        this.d3_regulators = this.d3_container.append('svg:g').selectAll('g');
         this.d3_dragline = this.d3_container.append('svg:g');
         this.d3_line_points = this.d3_container.append('svg:g');
 
@@ -229,6 +230,49 @@ Economics.Render.prototype = {
 
         this.d3_links.exit().remove();
 
+        var regulator = this.scene.links.filter(function (object) {
+            return object.type === EconomicsLayoutObjectType.ModelRegulator;
+        });
+
+
+        this.d3_regulators = this.d3_regulators.data(regulator, function (d) {
+            return d.id;
+        });
+
+        g = this.d3_regulators.enter().append('svg:g')
+            .attr("transform", function (d) {
+                return 'translate(' + d.position.x + ', ' + d.position.y + ')';
+            });
+        g.append('svg:rect')
+            .attr('class', function (d) {
+                return self.classState(d, 'EconomicsLink');
+            })
+            .attr('class', 'sc-no-default-cmd ui-no-tooltip')
+            .style('fill','rgb(255,255,255)');
+
+        g.append('svg:foreignObject')
+            .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("sc_addr", function (d) {
+                return d.addr;
+            })
+            .attr('class', function () {
+                return "sc-no-default-cmd ui-no-tooltip";
+            })
+            .append("xhtml:link_body")
+            .style("background", "transparent")
+            .style("margin", "0 0 0 0")
+            .html(function (d) {
+                var id = 'regulator_' + self.containerId + '_' + d.id;
+                return '<div style="vertical-align: middle;" id="' + id + '" sc_addr="' + d.addr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
+            });
+
+        eventsWrap(g);
+
+        this.d3_regulators.exit().remove();
+
+
         var actions = this.scene.links.filter(function (object) {
             return object.type === EconomicsLayoutObjectType.ModelAction;
         });
@@ -383,6 +427,58 @@ Economics.Render.prototype = {
                 }).attr("sc_addr", function (d) {
                 return d.sc_addr;
             });
+
+            g.selectAll(function () {
+                return this.getElementsByTagName("foreignObject");
+            })
+                .attr('width', function (d) {
+                    return d.scale.x;
+                })
+                .attr('height', function (d) {
+
+                    return d.scale.y;
+                });
+
+            g.attr("transform", function (d) {
+                return 'translate(' + (d.position.x - (d.scale.x + self.linkBorderWidth) * 0.5) + ', ' + (d.position.y - (d.scale.y + self.linkBorderWidth) * 0.5) + ')';
+            });
+
+        });
+
+        this.d3_regulators.each(function (d) {
+
+            if (!d.need_observer_sync && d.contentLoaded) return; // do nothing
+
+            var linkDiv = $(document.getElementById("regulator_" + self.containerId + "_" + d.id + "_text"));
+
+            linkDiv.html(d.content);
+
+            var g = d3.select(this);
+
+            var width;
+            var height;
+            var offset = 15;
+
+            g.select('rect')
+                .attr('width', function (d) {
+                    width = Math.min(linkDiv.outerWidth(), 300) + offset* 2;
+                    width = Math.max(width, 120);
+                    d.scale.x = width;
+                    return d.scale.x ;
+                })
+                .attr('height', function (d) {
+                    height = Math.min(linkDiv.outerHeight(), 200) + 10;
+                    height = Math.max(height, 40);
+                    d.scale.y = height;
+                    return d.scale.y ;
+                })
+                .attr('rx',  height/2)
+                .attr('class', function (d) {
+                    return self.classState(d, 'EconomicsLink');
+                })
+                .attr("sc_addr", function (d) {
+                    return d.addr;
+                });
 
             g.selectAll(function () {
                 return this.getElementsByTagName("foreignObject");
