@@ -293,7 +293,7 @@ Economics.Render.prototype = {
             .style('fill','rgb(204,218,169)');
 
         g.append('svg:foreignObject')
-            // .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
+            .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
             .attr("width", "100%")
             .attr("height", "100%")
             .append("xhtml:link_body")
@@ -507,20 +507,26 @@ Economics.Render.prototype = {
 
             var g = d3.select(this);
 
+            var radius;
+            var offset = 19;
+
             g.select('circle')
+                .attr('r', function (d) {
+                    radius=linkDiv.outerHeight()/2+ offset* 2;
+                    d.scale.y=radius;
+                    d.scale.x=radius;
+                    return radius;
+                })
                 .attr('cx', function (d) {
                     return d.scale.x;
                 })
                 .attr('cy', function (d) {
                     return d.scale.y;
                 })
-                .attr('r', function (d) {
-                    d.scale.y = 60;
-                    return d.scale.y + self.linkBorderWidth;
-                })
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
-                }).attr("sc_addr", function (d) {
+                })
+                .attr("sc_addr", function (d) {
                 return d.addr;
             });
 
@@ -528,11 +534,10 @@ Economics.Render.prototype = {
                 return this.getElementsByTagName("foreignObject");
             })
                 .attr('width', function (d) {
-                    return d.scale.x+75;
+                    return d.scale.x+(radius)/2+15;
                 })
                 .attr('height', function (d) {
-
-                    return d.scale.y+75;
+                    return d.scale.y+radius;
                 });
 
             g.attr("transform", function (d) {

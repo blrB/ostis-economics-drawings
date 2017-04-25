@@ -44,12 +44,12 @@
 
 .EconomicsAction{
     display: block;
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
-    margin:40px 20px 40px 0px;
-    min-width: 25px;
-    min-height: 25px;
-    max-height: 50px;
+    padding:30% 5% 5% 20%;
+    /*min-width: 25px;*/
+    /*min-height: 25px;*/
+    /*max-height: 70px;*/
 }
 
 /* --- Edges --- */
