@@ -12,13 +12,13 @@ var EconomicsAlphabet = {
         // edge markers
         defs.append('svg:marker')
             .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
-            .attr('markerWidth', 5).attr('markerHeight', 10).attr('orient', 'auto')
+            .attr('markerWidth', 25).attr('markerHeight', 50).attr('orient', 'auto')
           .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
             
         defs.append('svg:marker')
             .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
-            .attr('markerWidth', 1.5).attr('markerHeight', 6).attr('orient', 'auto')
+            .attr('markerWidth', 7).attr('markerHeight', 30).attr('orient', 'auto')
           .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
             
