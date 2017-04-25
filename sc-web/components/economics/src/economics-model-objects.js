@@ -701,7 +701,7 @@ Economics.ModelAction.getAllObjectsByContour = function(contour) {
 };
 
 Economics.ModelAction.prototype.getConnectionPos = function(from) {
-    var radius = 75;
+    var radius = this.scale.x+10;
     var center = new Economics.Vector3(this.position.x + this.scale.x * 0.5 , this.position.y +this.scale.y * 0.5,0);
     var result = new Economics.Vector3(0, 0, 0);
 
