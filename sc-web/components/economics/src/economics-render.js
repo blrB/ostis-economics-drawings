@@ -508,11 +508,11 @@ Economics.Render.prototype = {
             var g = d3.select(this);
 
             var radius;
-            var offset = 19;
+            var offset = 15;
 
             g.select('circle')
                 .attr('r', function (d) {
-                    radius=linkDiv.outerHeight()/2+ offset* 2;
+                    radius=Math.max(linkDiv.outerWidth()/2,linkDiv.outerHeight()/2)+ offset* 2;
                     d.scale.y=radius;
                     d.scale.x=radius;
                     return radius;
@@ -534,7 +534,7 @@ Economics.Render.prototype = {
                 return this.getElementsByTagName("foreignObject");
             })
                 .attr('width', function (d) {
-                    return d.scale.x+(radius)/2+15;
+                    return d.scale.x+(radius)/2+offset;
                 })
                 .attr('height', function (d) {
                     return d.scale.y+radius;
