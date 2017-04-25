@@ -6,6 +6,7 @@ UI-component for https://github.com/ShunkevichDV/ostis
 
 ```sh
 
+npm install 
 grunt build
 
 ```
