@@ -79,7 +79,12 @@ Economics.TemplateFinder.prototype = {
                     scene.appendObject(link);
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
-                    var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
+                    if (object.target && object.source) {
+                        var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
+                    } else {
+                        console.log("Error, can not create arrow " + model.source + " -> " + model.target);
+                        console.log(object.source + " -> " + object.target)
+                    }
                     scene.appendObject(edge);
                 } else if (model instanceof Economics.ModelRegulatorHelper) {
                     var object = finder.findSourceAndTargetByModel(model);
@@ -89,7 +94,12 @@ Economics.TemplateFinder.prototype = {
                         object.target.setContent(model.labelString);
                         scene.appendObject(object.target);
                     }
-                    var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdgeRegulator);
+                    if (object.target && object.source) {
+                        var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdgeRegulator);
+                    } else {
+                        console.log("Error, can not create arrow for regulator" + model.source + " -> " + model.target);
+                        console.log(object.source + " -> " + object.target)
+                    }
                     scene.appendObject(edge);
                 }
             })
