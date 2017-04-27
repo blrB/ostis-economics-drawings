@@ -296,12 +296,15 @@ Economics.Render.prototype = {
             .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
             .attr("width", "100%")
             .attr("height", "100%")
+            .attr("sc_addr", function (d) {
+                return d.labelAddr;
+            })
             .append("xhtml:link_body")
             .style("background", "transparent")
             .style("margin", "0 0 0 0")
             .html(function (d) {
                 var id = 'action_' + self.containerId + '_' + d.id;
-                return '<div id="' + id + '" sc_addr="' + d.addr + '" class=\"EconomicsAction sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
+                return '<div id="' + id + '" sc_addr="' + d.labelAddr + '" class=\"EconomicsAction sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.labelAddr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -340,7 +343,7 @@ Economics.Render.prototype = {
             .attr("width", "100%")
             .attr("height", "100%")
             .attr("sc_addr", function (d) {
-                return d.addr;
+                return d.labelAddr;
             })
             .attr('class', function () {
                 return "sc-no-default-cmd ui-no-tooltip";
@@ -350,7 +353,7 @@ Economics.Render.prototype = {
             .style("margin", "0 0 0 0")
             .html(function (d) {
                 var id = 'procedure_' + self.containerId + '_' + d.id;
-                return '<div style="vertical-align: middle;" id="' + id + '" sc_addr="' + d.addr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.addr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
+                return '<div style="vertical-align: middle;" id="' + id + '" sc_addr="' + d.labelAddr + '" class=\"EconomicsProcedure sc-no-default-cmd ui-no-tooltip \"><div id="' + id + '_text" style="display: inline-block;" sc_addr="' + d.labelAddr + '" class="impl sc-no-default-cmd ui-no-tooltip "></div></div>';
             });
 
 
@@ -527,7 +530,7 @@ Economics.Render.prototype = {
                     return self.classState(d, 'EconomicsLink');
                 })
                 .attr("sc_addr", function (d) {
-                return d.addr;
+                return d.labelAddr;
             });
 
             g.selectAll(function () {
@@ -577,7 +580,7 @@ Economics.Render.prototype = {
                     return self.classState(d, 'EconomicsLink');
                 })
                 .attr("sc_addr", function (d) {
-                return d.addr;
+                return d.labelAddr;
                 });
 
             g.select('.firstLine')

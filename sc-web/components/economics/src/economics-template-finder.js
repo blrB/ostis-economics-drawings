@@ -75,6 +75,8 @@ Economics.TemplateFinder.prototype = {
                         link = Economics.Creator.createAction(new Economics.Vector3(x, y, 0), '');
                     }
                     link.addr = model.addr;
+                    link.labelString = model.labelString;
+                    link.labelAddr = model.labelAddr;
                     link.setContent(model.labelString);
                     scene.appendObject(link);
                 } else if (model instanceof Economics.ModelArrow) {
