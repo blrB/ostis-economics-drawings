@@ -299,6 +299,9 @@ Economics.Render.prototype = {
             .attr("sc_addr", function (d) {
                 return d.labelAddr;
             })
+            .attr('class', function () {
+                return "sc-no-default-cmd ui-no-tooltip";
+            })
             .append("xhtml:link_body")
             .style("background", "transparent")
             .style("margin", "0 0 0 0")

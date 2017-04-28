@@ -20,7 +20,7 @@ Economics.TemplateFinder.prototype = {
         this.templates.push(Economics.ModelProcedure);
         this.templates.push(Economics.ModelAction);
         this.templates.push(Economics.ModelArrow);
-        this.templates.push(Economics.ModelRegulator);
+        this.templates.push(Economics.ModelRegulatorHelper);
     },
 
     getAllObjectsByContour: function () {
@@ -82,7 +82,7 @@ Economics.TemplateFinder.prototype = {
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
                     if (object.target && object.source) {
-                        var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
+                        var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdge.Arrow);
                     } else {
                         console.log("Error, can not create arrow " + model.source + " -> " + model.target);
                         console.log(object.source + " -> " + object.target)
@@ -97,7 +97,7 @@ Economics.TemplateFinder.prototype = {
                         scene.appendObject(object.target);
                     }
                     if (object.target && object.source) {
-                        var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdgeRegulator);
+                        var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdge.Regulator);
                     } else {
                         console.log("Error, can not create arrow for regulator" + model.source + " -> " + model.target);
                         console.log(object.source + " -> " + object.target)

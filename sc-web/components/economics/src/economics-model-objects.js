@@ -471,7 +471,7 @@ Economics.ModelEdge.prototype.update = function() {
 /*! Checks if this edge need to be drawen with arrow at the end
  */
 Economics.ModelEdge.prototype.hasArrow = function() {
-   return this.sc_type & (sc_type_arc_common | sc_type_arc_access);
+   return this.sc_type === EconomicsTypeEdge.Arrow;
 };
  
 /*!
@@ -766,13 +766,6 @@ Economics.ModelArrow.getAllObjectsByContour = function(contour) {
     });
 };
 
-Economics.ModelRegulatorHelper = function(options) {
-
-    this.labelString = options.labelString;
-    this.source = options.source;
-    this.target = options.target;
-};
-
 Economics.ModelRegulator = function(options) {
     Economics.ModelLink.call(this, options);
 
@@ -782,7 +775,14 @@ Economics.ModelRegulator = function(options) {
 
 Economics.ModelRegulator.prototype = Object.create( Economics.ModelLink.prototype );
 
-Economics.ModelRegulator.getAllObjectsByContour = function(contour) {
+Economics.ModelRegulatorHelper = function(options) {
+
+    this.labelString = options.labelString;
+    this.source = options.source;
+    this.target = options.target;
+};
+
+Economics.ModelRegulatorHelper.getAllObjectsByContour = function(contour) {
 
     return new Promise(function (resolve, reject) {
         window.sctpClient.iterate_constr(
