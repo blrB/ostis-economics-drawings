@@ -8,20 +8,20 @@ var EconomicsAlphabet = {
     initSvgDefs: function(defs, containerId) {
         
         this.initTypesMapping();
-        
-        // edge markers
+
+
         defs.append('svg:marker')
             .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
-            .attr('markerWidth', 25).attr('markerHeight', 50).attr('orient', 'auto')
-          .append('svg:path')
+            .attr('markerWidth', 10).attr('markerHeight', 20).attr('orient', 'auto')
+            .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
-            
+
         defs.append('svg:marker')
-            .attr('id', 'end-arrow-access_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
-            .attr('markerWidth', 7).attr('markerHeight', 30).attr('orient', 'auto')
-          .append('svg:path')
+            .attr('id', 'end-arrow-common_for_economics_' + containerId).attr('viewBox', '0 -5 10 10').attr('refX', 0)
+            .attr('markerWidth', 3).attr('markerHeight', 12).attr('orient', 'auto')
+            .append('svg:path')
             .attr('d', 'M0,-4L10,0L0,4').attr('fill', '#000');
-            
+
         // nodes
         defs.append('svg:circle').attr('id', 'economics.node.const.outer').attr('cx', '0').attr('cy', '0').attr('r', '10');
         defs.append('svg:rect').attr('id', 'economics.node.var.outer').attr('x', '-10').attr('y', '-10').attr('width', '20').attr('height', '20');
@@ -92,7 +92,7 @@ var EconomicsAlphabet = {
             var dv = pos_trg.clone().sub(prev_pos);
             var len = dv.length();
             dv.normalize();
-            pos_trg = prev_pos.clone().add(dv.multiplyScalar(len - 10));
+            pos_trg = prev_pos.clone().add(dv.multiplyScalar(len - 20));
         }
         
         // make position path
