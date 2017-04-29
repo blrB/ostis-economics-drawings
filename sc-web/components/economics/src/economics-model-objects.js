@@ -157,6 +157,10 @@ Economics.ModelObject.prototype.requestUpdate = function() {
     }
 };
 
+Economics.ModelObject.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.defaultCharge;
+Economics.ModelObject.prototype.getStrength = () => Economics.LayoutAlgorithmForceBased.config.defaultStrength;
+Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultDistance;
+
 /** Updates object state.
  */
 Economics.ModelObject.prototype.update = function() {

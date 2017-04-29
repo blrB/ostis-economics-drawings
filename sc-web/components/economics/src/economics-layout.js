@@ -44,6 +44,14 @@ Economics.LayoutAlgorithmForceBased.prototype.stop = function() {
   
 };
 
+Economics.LayoutAlgorithmForceBased.config = {
+    friction: 0.9,
+    gravity: 0.03,
+    defaultDistance: 300,
+    defaultStrength: 1,
+    defaultCharge: 0
+};
+
 Economics.LayoutAlgorithmForceBased.prototype.start = function() {
     
     this.stop();
@@ -56,9 +64,9 @@ Economics.LayoutAlgorithmForceBased.prototype.start = function() {
     .nodes(this.nodes)
     .links(this.edges)
     .size(this.rect)
-    .friction(0.9)
-    .gravity(0.03)
-    .linkDistance(function(edge){
+    .friction(Economics.LayoutAlgorithmForceBased.config.friction)
+    .gravity(Economics.LayoutAlgorithmForceBased.config.gravity)
+    .linkDistance(edge => edge.object.getDistance()/*function(edge){
         
         var p1 = edge.source.object.getConnectionPos(edge.target.object.position, edge.object.source_dot);
         var p2 = edge.target.object.getConnectionPos(edge.source.object.position, edge.object.target_dot);
@@ -71,16 +79,16 @@ Economics.LayoutAlgorithmForceBased.prototype.start = function() {
 		}
 
 		return 500 + d;
-	})
-	.linkStrength(function(edge){
+	}*/)
+	.linkStrength(edge => edge.object.getStrength()/*function(edge){
 		if (edge.source.type == EconomicsLayoutObjectType.DotPoint ||
 			edge.target.type == EconomicsLayoutObjectType.DotPoint) {
 			return 1;
 		}
 
 		return 0.3;
-	})
-    .charge(function(node) {
+	}*/)
+    .charge(node => node.object.getCharge()/*function(node) {
 		if (node.type == EconomicsLayoutObjectType.DotPoint) {
             return 0;
 		} else if (node.type == EconomicsLayoutObjectType.Link) {
@@ -88,7 +96,7 @@ Economics.LayoutAlgorithmForceBased.prototype.start = function() {
         }
         
 		return -700;
-	})
+	}*/)
     .on('tick', function() {
         self.onLayoutTick();
     })
@@ -248,6 +256,8 @@ Economics.LayoutManager.prototype.prepareObjects = function() {
     
 };
 
+let algorithm;
+
 /**
  * Starts layout in scene
  */
@@ -262,6 +272,7 @@ Economics.LayoutManager.prototype.doLayout = function() {
     this.algorithm = new Economics.LayoutAlgorithmForceBased(this.nodes, this.edges, null, 
                                                         $.proxy(this.onTickUpdate, this), 
                                                         this.scene.getContainerSize());
+    algorithm = this.algorithm;
     this.algorithm.start();
 };
 
