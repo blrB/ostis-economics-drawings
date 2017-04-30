@@ -368,13 +368,6 @@ Economics.ModelEdge.prototype.setPosition = function (offset) {
     Economics.ModelObject.prototype.setPosition.call(this, offset);
 };
 
-// Economics.ModelEdge.prototype.getDistance = () => {
-//     if (this.source instanceof Economics.ModelRegulator || this.target instanceof Economics.ModelRegulator) {
-//         return Economics.LayoutAlgorithmForceBased.config.regulatorDistance;
-//     }
-//     return Economics.LayoutAlgorithmForceBased.config.defaultDistance;
-// };
-
 /**
  * Destroy object
  */
@@ -854,7 +847,11 @@ Economics.ModelRegulator.getAllObjectsByContour = function (contour) {
 };
 
 
-Economics.ModelObject.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.defaultCharge;
+Economics.ModelObject.prototype.getCharge = function () {
+    let charge = Economics.LayoutAlgorithmForceBased.config.edgeNodeChargeCoef *
+        Economics.LayoutAlgorithmForceBased.config.defaultCharge * this.edges.length;
+    return Economics.LayoutAlgorithmForceBased.config.defaultCharge + charge;
+};
 Economics.ModelObject.prototype.getChargeDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultChargeDistance;
 Economics.ModelObject.prototype.getStrength = () => Economics.LayoutAlgorithmForceBased.config.defaultStrength;
 Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultDistance;
@@ -863,3 +860,9 @@ Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmFor
 // Economics.ModelAction.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.actionCharge;
 // Economics.ModelRegulator.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.regulatorCharge;
 // Economics.ModelProcedure.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.procedureCharge;
+// Economics.ModelEdge.prototype.getDistance = () => {
+//     if (this.source instanceof Economics.ModelRegulator || this.target instanceof Economics.ModelRegulator) {
+//         return Economics.LayoutAlgorithmForceBased.config.regulatorDistance;
+//     }
+//     return Economics.LayoutAlgorithmForceBased.config.defaultDistance;
+// };

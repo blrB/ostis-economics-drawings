@@ -64,7 +64,7 @@ Economics.LayoutAlgorithmForceBased.prototype.stop = function () {
 
 Economics.LayoutAlgorithmForceBased.config = {
     friction: 0.9,
-    gravity: 0.03,
+    gravity: 0.1,
     defaultDistance: 200,
     defaultStrength: 0.5,
     defaultCharge: -800,
@@ -73,7 +73,8 @@ Economics.LayoutAlgorithmForceBased.config = {
     procedureCharge: 0,
     actionCharge: 0,
     regulatorDistance: 0,
-    defaultChargeDistance: 1000
+    defaultChargeDistance: 500,
+    edgeNodeChargeCoef: 1
 };
 
 Economics.LayoutAlgorithmForceBased.prototype.start = function () {
@@ -91,37 +92,9 @@ Economics.LayoutAlgorithmForceBased.prototype.start = function () {
         .friction(Economics.LayoutAlgorithmForceBased.config.friction)
         .gravity(Economics.LayoutAlgorithmForceBased.config.gravity)
         .chargeDistance(Economics.LayoutAlgorithmForceBased.config.defaultChargeDistance)
-        .linkDistance(edge => edge.getDistance()/*function(edge){
-
-         var p1 = edge.source.getConnectionPos(edge.target.position, edge.source_dot);
-         var p2 = edge.target.getConnectionPos(edge.source.position, edge.target_dot);
-         var cd = edge.source.position.clone().sub(edge.target.position).length();
-         var d = cd - p1.sub(p2).length();
-
-         if (edge.source.type == EconomicsLayoutObjectType.DotPoint ||
-         edge.target.type == EconomicsLayoutObjectType.DotPoint) {
-         return d + 250;
-         }
-
-         return 500 + d;
-         }*/)
-        .linkStrength(edge => edge.getStrength()/*function(edge){
-         if (edge.source.type == EconomicsLayoutObjectType.DotPoint ||
-         edge.target.type == EconomicsLayoutObjectType.DotPoint) {
-         return 1;
-         }
-
-         return 0.3;
-         }*/)
-        .charge(node => node.getCharge()/*function(node) {
-         if (node.type == EconomicsLayoutObjectType.DotPoint) {
-         return 0;
-         } else if (node.type == EconomicsLayoutObjectType.Link) {
-         return -900;
-         }
-
-         return -700;
-         }*/)
+        .linkDistance(edge => edge.getDistance())
+        .linkStrength(edge => edge.getStrength())
+        .charge(node => node.getCharge())
         .on('tick', function () {
             self.onLayoutTick();
         })
@@ -135,15 +108,6 @@ Economics.LayoutAlgorithmForceBased.prototype.onLayoutTick = function () {
         var node_layout = this.nodes[idx];
 
         node_layout.setPosition(new Economics.Vector3(node_layout.x, node_layout.y, 0))
-        // if (node_layout.type === EconomicsLayoutObjectType.Node) {
-        //     node_layout.setPosition(new Economics.Vector3(node_layout.x, node_layout.y, 0));
-        // } else if (node_layout.type === EconomicsLayoutObjectType.Link) {
-        //     node_layout.setPosition(new Economics.Vector3(node_layout.x, node_layout.y, 0));
-        // } else if (node_layout.type === EconomicsLayoutObjectType.DotPoint) {
-        //     dots.push(node_layout);
-        // } else if (node_layout.type === EconomicsLayoutObjectType.Contour) {
-        //     node_layout.setPosition(new Economics.Vector3(node_layout.x, node_layout.y, 0));
-        // }
     }
 
     // setup dot points positions 
@@ -189,99 +153,6 @@ Economics.LayoutManager.prototype.prepareObjects = function () {
         .concat(this.scene.links || [])
         .concat(this.scene.contours || []);
     this.edges = [].concat(this.scene.edges || []);
-    // var objDict = {};
-    //
-    // // first of all we need to collect objects from scene, and build them representation for layout
-    // for (idx in this.scene.nodes) {
-    //     var node = this.scene.nodes[idx];
-    //     if (node.contour)
-    //         continue;
-    //
-    //     var obj = new Object();
-    //
-    //     obj.x = node.position.x;
-    //     obj.y = node.position.y;
-    //     obj.object = node;
-    //     obj.type = EconomicsLayoutObjectType.Node;
-    //
-    //     objDict[node.id] = obj;
-    //     this.nodes.push(obj);
-    // }
-    //
-    // for (idx in this.scene.links) {
-    //     var link = this.scene.links[idx];
-    //     if (link.contour)
-    //         continue;
-    //
-    //     var obj = new Object();
-    //
-    //     obj.x = link.position.x;
-    //     obj.y = link.position.y;
-    //     obj.object = link;
-    //     obj.type = EconomicsLayoutObjectType.Link;
-    //
-    //     objDict[link.id] = obj;
-    //     this.nodes.push(obj);
-    // }
-    //
-    // for (idx in this.scene.edges) {
-    //     var edge = this.scene.edges[idx];
-    //     if (edge.contour)
-    //         continue;
-    //
-    //     var obj = new Object();
-    //
-    //     obj.object = edge;
-    //     obj.type = EconomicsLayoutObjectType.Edge;
-    //
-    //     objDict[edge.id] = obj;
-    //     this.edges.push(obj);
-    // }
-    //
-    // for (idx in this.scene.contours) {
-    //     var contour = this.scene.contours[idx];
-    //     if (contour.contour)
-    //         continue;
-    //
-    //     var obj = new Object();
-    //
-    //     obj.x = contour.position.x;
-    //     obj.y = contour.position.y;
-    //     obj.object = contour;
-    //     obj.type = EconomicsLayoutObjectType.Contour;
-    //
-    //     objDict[contour.id] = obj;
-    //     this.nodes.push(obj);
-    // }
-    //
-    // // store begin and end for edges
-    // for (idx in this.edges) {
-    //     edge = this.edges[idx];
-    //
-    //     source = objDict[edge.object.source.id];
-    //     target = objDict[edge.object.target.id];
-    //
-    //     function getEdgeObj(srcObj, isSource) {
-    //         if (srcObj.type == EconomicsLayoutObjectType.Edge) {
-    //             var obj = new Object();
-    //             obj.type = EconomicsLayoutObjectType.DotPoint;
-    //             obj.object = srcObj.object;
-    //             obj.source = isSource;
-    //
-    //             return obj;
-    //         }
-    //         return srcObj;
-    //     };
-    //
-    //     edge.source = getEdgeObj(source, true);
-    //     edge.target = getEdgeObj(target, false);
-    //
-    //     if (edge.source != source)
-    //         this.nodes.push(edge.source);
-    //     if (edge.target != target)
-    //         this.nodes.push(edge.target);
-    // }
-
 };
 
 let algorithm;
