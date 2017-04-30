@@ -56,10 +56,10 @@ Economics.TemplateFinder.prototype = {
         });
     },
 
-    viewInEditor: function(data) {
+    viewInEditor: function (data) {
 
         function getRandomInt0to100() {
-            return Math.floor(Math.random() * (100));
+            return Math.floor(Math.random() * (1000));
         }
 
         var scene = this.scene;
@@ -70,9 +70,9 @@ Economics.TemplateFinder.prototype = {
                 if (model instanceof Economics.ModelProcedure || model instanceof Economics.ModelAction) {
                     var link;
                     if (model instanceof Economics.ModelProcedure) {
-                        link = Economics.Creator.createProcedure(new Economics.Vector3(x, y, 0), '');
+                        link = Economics.Creator.createProcedure(new Economics.Vector3(x, 2000 + y, 0), '');
                     } else if (model instanceof Economics.ModelAction) {
-                        link = Economics.Creator.createAction(new Economics.Vector3(x, y, 0), '');
+                        link = Economics.Creator.createAction(new Economics.Vector3(x, 2000 + y, 0), '');
                     }
                     link.addr = model.addr;
                     link.labelString = model.labelString;
