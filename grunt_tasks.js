@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function () {
 
     var kb = 'kb/economics_drawings/';
     var components = 'sc-web/components/economics/';
@@ -6,8 +6,9 @@ module.exports = function() {
     var clientCssDirPath = '../sc-web/client/static/components/css/';
     var clientHtmlDirPath = '../sc-web/client/static/components/html/';
     var clientImgDirPath = '../sc-web/client/static/components/images/';
+    var commonJsDirPath = '../sc-web/client/static/common/';
 
-    return  {
+    return {
         concat: {
             economicscmp: {
                 src: [
@@ -57,6 +58,13 @@ module.exports = function() {
                 expand: true,
                 flatten: true
             },
+            economicsJs: {
+                cwd: components + 'static/common/js/',
+                src: ['**'],
+                dest: commonJsDirPath,
+                expand: true,
+                flatten: false
+            },
             economicsHTML: {
                 cwd: components + 'static/components/html/',
                 src: ['*.html'],
@@ -91,11 +99,14 @@ module.exports = function() {
             copyKB: {
                 files: [kb + '**',],
                 tasks: ['copy:kb']
+            },
+            economicsJs: {
+                files: [components + 'static/common/js/**',],
+                tasks: ['copy:economicsJs']
             }
         },
         exec: {
-          updateCssAndJs: 'sh add-css-and-js.sh'
+            updateCssAndJs: 'sh add-css-and-js.sh'
         }
     }
 };
-
