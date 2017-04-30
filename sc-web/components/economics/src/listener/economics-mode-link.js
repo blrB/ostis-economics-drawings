@@ -1,4 +1,4 @@
-EconomicsLinkListener = function (scene) {
+EconomicsLinkListener = function(scene) {
     this.scene = scene;
 };
 
@@ -6,11 +6,11 @@ EconomicsLinkListener.prototype = {
 
     constructor: EconomicsLinkListener,
 
-    onMouseMove: function (x, y) {
+    onMouseMove: function(x, y) {
         return false;
     },
 
-    onMouseDown: function (x, y) {
+    onMouseDown: function(x, y) {
         return false;
     },
 
@@ -22,19 +22,19 @@ EconomicsLinkListener.prototype = {
         return true;
     },
 
-    onMouseDownObject: function (obj) {
+    onMouseDownObject: function(obj) {
         return false;
     },
 
-    onMouseUpObject: function (obj) {
+    onMouseUpObject: function(obj) {
         return true;
     },
 
-    onKeyDown: function (event) {
+    onKeyDown: function(event) {
         return false;
     },
 
-    onKeyUp: function (event) {
+    onKeyUp: function(event) {
         return false;
     }
 

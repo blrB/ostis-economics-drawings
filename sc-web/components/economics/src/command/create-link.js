@@ -9,7 +9,7 @@ EconomicsCommandCreateProcedure.prototype = {
 
     constructor: EconomicsCommandCreateProcedure,
 
-    undo: function () {
+    undo: function() {
         if (this.link.is_selected) {
             var idx = this.scene.selected_objects.indexOf(this.link);
             this.scene.selected_objects.splice(idx, 1);
@@ -19,8 +19,8 @@ EconomicsCommandCreateProcedure.prototype = {
         this.scene.removeObject(this.link);
     },
 
-    execute: function () {
-        if (this.link == null) {
+    execute: function() {
+        if (this.link == null){
             this.link = Economics.Creator.createProcedure(new Economics.Vector3(this.x, this.y, 0), '');
             this.scene.appendLink(this.link);
             this.scene.updateRender();
@@ -45,7 +45,7 @@ EconomicsCommandCreateAction.prototype = {
 
     constructor: EconomicsCommandCreateAction,
 
-    undo: function () {
+    undo: function() {
         if (this.link.is_selected) {
             var idx = this.scene.selected_objects.indexOf(this.link);
             this.scene.selected_objects.splice(idx, 1);
@@ -55,8 +55,8 @@ EconomicsCommandCreateAction.prototype = {
         this.scene.removeObject(this.link);
     },
 
-    execute: function () {
-        if (this.link == null) {
+    execute: function() {
+        if (this.link == null){
             this.link = Economics.Creator.createAction(new Economics.Vector3(this.x, this.y, 0), '');
             this.scene.appendLink(this.link);
             this.scene.updateRender();
@@ -81,7 +81,7 @@ EconomicsCommandCreateRegulator.prototype = {
 
     constructor: EconomicsCommandCreateRegulator,
 
-    undo: function () {
+    undo: function() {
         if (this.link.is_selected) {
             var idx = this.scene.selected_objects.indexOf(this.link);
             this.scene.selected_objects.splice(idx, 1);
@@ -91,8 +91,8 @@ EconomicsCommandCreateRegulator.prototype = {
         this.scene.removeObject(this.link);
     },
 
-    execute: function () {
-        if (this.link == null) {
+    execute: function() {
+        if (this.link == null){
             this.link = Economics.Creator.createRegulator(new Economics.Vector3(this.x, this.y, 0), '');
             this.scene.appendLink(this.link);
             this.scene.updateRender();

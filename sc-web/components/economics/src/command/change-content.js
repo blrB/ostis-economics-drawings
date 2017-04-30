@@ -10,11 +10,11 @@ EconomicsCommandChangeContent.prototype = {
 
     constructor: EconomicsCommandChangeContent,
 
-    undo: function () {
+    undo: function() {
         this.object.setContent(this.oldContent, this.oldType);
     },
 
-    execute: function () {
+    execute: function() {
         this.object.setContent(this.newContent, this.newType);
     }
 

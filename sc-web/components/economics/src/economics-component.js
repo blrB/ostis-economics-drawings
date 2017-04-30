@@ -2,9 +2,9 @@ EconomicsComponent = {
     ext_lang: 'economics_code',
     formats: ['format_economics_json'],
     struct_support: true,
-    factory: function (sandbox) {
+    factory: function(sandbox) {
         return new Promise(function (resolve, regect) {
-            if (EconomicsKeynodesHandler.load) {
+            if (EconomicsKeynodesHandler.load){
                 resolve(economicsViewerWindow(sandbox));
             } else {
                 EconomicsKeynodesHandler.initSystemIds(function () {
@@ -21,7 +21,7 @@ EconomicsComponent = {
  * @param config
  * @constructor
  */
-var economicsViewerWindow = function (sandbox) {
+var economicsViewerWindow = function(sandbox) {
 
     this.domContainer = sandbox.container;
     this.windowId = sandbox.container.replace(/.*?_(.*)/, '$1');
@@ -29,15 +29,15 @@ var economicsViewerWindow = function (sandbox) {
     this.tree = new Economics.Tree();
     this.editor = new Economics.Editor();
     this.finder = new Economics.TemplateFinder();
-
+    
     var self = this;
     if (sandbox.is_struct) {
         this.scStructTranslator = new economicsScStructTranslator(this.editor, this.sandbox);
     }
 
-    var autocompletionVariants = function (keyword, callback, self) {
+    var autocompletionVariants = function(keyword, callback, self) {
 
-        SCWeb.core.Server.findIdentifiersSubStr(keyword, function (data) {
+        SCWeb.core.Server.findIdentifiersSubStr(keyword, function(data) {
             keys = [];
             for (key in data) {
                 var list = data[key];
@@ -50,13 +50,13 @@ var economicsViewerWindow = function (sandbox) {
             callback(keys);
         });
     };
-
+    
     this.editor.init(
         {
             sandbox: sandbox,
             containerId: sandbox.container,
-            autocompletionVariants: autocompletionVariants,
-            translateToSc: function (scene, callback) {
+            autocompletionVariants : autocompletionVariants,
+            translateToSc: function(scene, callback) {
                 return self.scStructTranslator.translateToSc(callback);
             },
             canEdit: this.sandbox.canEdit(),
@@ -69,11 +69,11 @@ var economicsViewerWindow = function (sandbox) {
         editor: this.editor
     });
 
-    this.receiveData = function (data) {
+    this.receiveData = function(data) {
         var dfd = new jQuery.Deferred();
-
+    
         /*this.collectTriples(data);
-         this.tree.build(this.triples);*/
+        this.tree.build(this.triples);*/
         // this._buildGraph(data);
 
         self.finder.contour = JSON.parse(data).keywords[0].addr;
@@ -83,10 +83,10 @@ var economicsViewerWindow = function (sandbox) {
         return dfd.promise();
     };
 
-    this.collectTriples = function (data) {
+    this.collectTriples = function(data) {
 
         this.triples = [];
-
+        
         var elements = {};
         var edges = [];
         for (var i = 0; i < data.length; i++) {
@@ -110,29 +110,29 @@ var economicsViewerWindow = function (sandbox) {
                 if (beginEl && endEl) {
                     founded = true;
                     edges.splice(idx, 1);
-
+                    
                     this.triples.push([beginEl, {type: obj.el_type, addr: obj.id}, endEl]);
-                }
+                } 
             }
         }
 
         alert(this.triples.length);
     };
 
-    this._buildGraph = function (data) {
-
+    this._buildGraph = function(data) {
+        
         var elements = {};
         var edges = new Array();
         for (var i = 0; i < data.length; i++) {
             var el = data[i];
-
+            
             if (elements.hasOwnProperty(el.id))
                 continue;
             if (Object.prototype.hasOwnProperty.call(this.editor.scene.objects, el.id)) {
                 elements[el.id] = this.editor.scene.objects[el.id];
                 continue;
             }
-
+            
             if (el.el_type & sc_type_node || el.el_type & sc_type_link) {
                 var model_node = Economics.Creator.createNode(el.el_type, new Economics.Vector3(10 * Math.random(), 10 * Math.random(), 0), '');
                 this.editor.scene.appendNode(model_node);
@@ -144,7 +144,7 @@ var economicsViewerWindow = function (sandbox) {
                 edges.push(el);
             }
         }
-
+        
         // create edges
         var founded = true;
         while (edges.length > 0 && founded) {
@@ -165,32 +165,32 @@ var economicsViewerWindow = function (sandbox) {
                     model_edge.setScAddr(obj.id);
                     model_edge.setObjectState(EconomicsObjectState.FromMemory);
                     elements[obj.id] = model_edge;
-                }
+                } 
             }
         }
-
+        
         if (edges.length > 0)
             alert("error");
-
+        
         this.editor.render.update();
         this.editor.scene.layout();
     };
 
-    this.destroy = function () {
+    this.destroy = function(){
         delete this.editor;
         return true;
     };
 
-    this.getObjectsToTranslate = function () {
+    this.getObjectsToTranslate = function() {
         return this.editor.scene.getScAddrs();
     };
 
-    this.applyTranslation = function (namesMap) {
+    this.applyTranslation = function(namesMap) {
         // TODO
     };
-
-
-    this.eventStructUpdate = function () {
+    
+    
+    this.eventStructUpdate = function() {
         self.scStructTranslator.updateFromSc.apply(self.scStructTranslator, arguments);
     };
 
@@ -204,12 +204,12 @@ var economicsViewerWindow = function (sandbox) {
 
     // find contour and draw
     new Promise(resolve => {
-        SCWeb.core.Server.getAnswerTranslated(question_addr, this.sandbox.keynodes.format_scs_json, function (answer) {
+        SCWeb.core.Server.getAnswerTranslated(question_addr, this.sandbox.keynodes.format_scs_json, function(answer){
             resolve(answer.link);
         })
     }).then(link => {
-        window.sctpClient.get_link_content(link)
-            .done(data => self.receiveData(data))
+            window.sctpClient.get_link_content(link)
+                .done(data=>self.receiveData(data))
     });
 
     // subscripe component

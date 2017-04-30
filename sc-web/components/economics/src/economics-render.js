@@ -50,8 +50,8 @@ Economics.Render.prototype = {
          */
 
         this.d3_drag_line = this.d3_container.append('svg:path')
-            .attr('class', 'dragline hidden')
-            .attr('d', 'M0,0L0,0');
+                .attr('class', 'dragline hidden')
+                .attr('d', 'M0,0L0,0');
 
         this.d3_accept_point = this.d3_container.append('svg:use')
             .attr('class', 'EconomicsAcceptPoint hidden')
@@ -178,7 +178,7 @@ Economics.Render.prototype = {
                 self.classToogle(this, 'EconomicsStateHighlighted', true);
                 if (self.scene.onMouseOverObject(d))
                     d3.event.stopPropagation();
-            })
+                })
                 .on('mouseout', function (d) {
                     self.classToogle(this, 'EconomicsStateHighlighted', false);
                     if (self.scene.onMouseOutObject(d))
@@ -248,7 +248,7 @@ Economics.Render.prototype = {
                 return self.classState(d, 'EconomicsLink');
             })
             .attr('class', 'sc-no-default-cmd ui-no-tooltip')
-            .style('fill', 'rgb(255,255,255)');
+            .style('fill','rgb(255,255,255)');
 
         g.append('svg:foreignObject')
             .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
@@ -290,7 +290,7 @@ Economics.Render.prototype = {
                 return self.classState(d, 'EconomicsLink');
             })
             .attr('class', 'sc-no-default-cmd ui-no-tooltip')
-            .style('fill', 'rgb(204,218,169)');
+            .style('fill','rgb(204,218,169)');
 
         g.append('svg:foreignObject')
             .attr('transform', 'translate(' + self.linkBorderWidth * 0.5 + ',' + self.linkBorderWidth * 0.5 + ')')
@@ -332,7 +332,7 @@ Economics.Render.prototype = {
                 return self.classState(d, 'EconomicsLink');
             })
             .attr('class', 'sc-no-default-cmd ui-no-tooltip')
-            .style('fill', 'rgb(149,174,206)');
+            .style('fill','rgb(149,174,206)');
 
         g.append('svg:line')
             .attr('class', "firstLine");
@@ -467,18 +467,18 @@ Economics.Render.prototype = {
 
             g.select('rect')
                 .attr('width', function (d) {
-                    width = Math.min(linkDiv.outerWidth(), 300) + offset * 2;
+                    width = Math.min(linkDiv.outerWidth(), 300) + offset* 2;
                     width = Math.max(width, 120);
                     d.scale.x = width;
-                    return d.scale.x;
+                    return d.scale.x ;
                 })
                 .attr('height', function (d) {
                     height = Math.min(linkDiv.outerHeight(), 200) + 10;
                     height = Math.max(height, 40);
                     d.scale.y = height;
-                    return d.scale.y;
+                    return d.scale.y ;
                 })
-                .attr('rx', height / 2)
+                .attr('rx',  height/2)
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
                 })
@@ -518,9 +518,9 @@ Economics.Render.prototype = {
 
             g.select('circle')
                 .attr('r', function (d) {
-                    radius = Math.max(linkDiv.outerWidth() / 2, linkDiv.outerHeight() / 2) + offset * 2;
-                    d.scale.y = radius;
-                    d.scale.x = radius;
+                    radius=Math.max(linkDiv.outerWidth()/2,linkDiv.outerHeight()/2)+ offset* 2;
+                    d.scale.y=radius;
+                    d.scale.x=radius;
                     return radius;
                 })
                 .attr('cx', function (d) {
@@ -533,17 +533,17 @@ Economics.Render.prototype = {
                     return self.classState(d, 'EconomicsLink');
                 })
                 .attr("sc_addr", function (d) {
-                    return d.labelAddr;
-                });
+                return d.labelAddr;
+            });
 
             g.selectAll(function () {
                 return this.getElementsByTagName("foreignObject");
             })
                 .attr('width', function (d) {
-                    return d.scale.x + (radius) / 2 + offset;
+                    return d.scale.x+(radius)/2+offset;
                 })
                 .attr('height', function (d) {
-                    return d.scale.y + radius;
+                    return d.scale.y+radius;
                 });
 
             g.attr("transform", function (d) {
@@ -568,22 +568,22 @@ Economics.Render.prototype = {
 
             g.select('rect')
                 .attr('width', function (d) {
-                    width = Math.min(linkDiv.outerWidth(), 300) + offset * 2;
+                    width = Math.min(linkDiv.outerWidth(), 300) + offset* 2;
                     width = Math.max(width, 120);
                     d.scale.x = width;
-                    return d.scale.x;
+                    return d.scale.x ;
                 })
                 .attr('height', function (d) {
                     height = Math.min(linkDiv.outerHeight(), 200) + 10;
                     height = Math.max(height, 80);
                     d.scale.y = height;
-                    return d.scale.y;
+                    return d.scale.y ;
                 })
                 .attr('class', function (d) {
                     return self.classState(d, 'EconomicsLink');
                 })
                 .attr("sc_addr", function (d) {
-                    return d.labelAddr;
+                return d.labelAddr;
                 });
 
             g.select('.firstLine')
@@ -699,6 +699,7 @@ Economics.Render.prototype = {
                 self.scene.revertDragPoint(d.idx);
                 d3.event.stopPropagation();
             });
+
 
 
         this.d3_accept_point.classed('hidden', true);

@@ -12,10 +12,10 @@ EconomicsKeynodesHandler = {
 
     load: false,
 
-    initSystemIds: function (callback) {
+    initSystemIds : function (callback){
         var self = this;
         SCWeb.core.Server.resolveScAddr(this.systemIds, function (keynodes) {
-            Object.getOwnPropertyNames(keynodes).forEach(function (key) {
+            Object.getOwnPropertyNames(keynodes).forEach(function(key) {
                 console.log('Resolved keynode: ' + key + ' = ' + keynodes[key]);
                 self.scKeynodes[key] = keynodes[key];
             });

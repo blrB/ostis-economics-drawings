@@ -6,14 +6,14 @@ EconomicsWrapperCommand.prototype = {
 
     constructor: EconomicsWrapperCommand,
 
-    undo: function () {
-        this.commands.forEach(function (command) {
+    undo: function() {
+        this.commands.forEach(function(command) {
             command.undo();
         });
     },
 
-    execute: function () {
-        this.commands.forEach(function (command) {
+    execute: function() {
+        this.commands.forEach(function(command) {
             command.execute();
         });
     }
