@@ -368,12 +368,12 @@ Economics.ModelEdge.prototype.setPosition = function (offset) {
     Economics.ModelObject.prototype.setPosition.call(this, offset);
 };
 
-Economics.ModelEdge.prototype.getDistance = () => {
-    if (this.source instanceof Economics.ModelRegulator || this.target instanceof Economics.ModelRegulator) {
-        return Economics.LayoutAlgorithmForceBased.config.regulatorDistance;
-    }
-    return Economics.LayoutAlgorithmForceBased.config.defaultDistance;
-};
+// Economics.ModelEdge.prototype.getDistance = () => {
+//     if (this.source instanceof Economics.ModelRegulator || this.target instanceof Economics.ModelRegulator) {
+//         return Economics.LayoutAlgorithmForceBased.config.regulatorDistance;
+//     }
+//     return Economics.LayoutAlgorithmForceBased.config.defaultDistance;
+// };
 
 /**
  * Destroy object

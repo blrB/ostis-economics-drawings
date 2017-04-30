@@ -16,6 +16,24 @@ Economics.LayoutAlgorithm = function (nodes, edges, contours, onTickUpdate) {
     this.edges = edges;
     this.contours = contours;
     this.onTickUpdate = onTickUpdate;
+
+    this.nodes.forEach(node => node.setPosition = (() => {
+        let original = node.setPosition.bind(node);
+        return position => {
+            original(position);
+            node.px = node.x;
+            node.py = node.y;
+            node.x = position.x;
+            node.y = position.y;
+        }
+    })());
+    this.nodes.forEach(node => node._setSelected = (() => {
+        let original = node._setSelected.bind(node);
+        return value => {
+            original(value);
+            node.fixed = value;
+        }
+    })());
 };
 
 Economics.LayoutAlgorithm.prototype = {
@@ -48,14 +66,14 @@ Economics.LayoutAlgorithmForceBased.config = {
     friction: 0.9,
     gravity: 0.03,
     defaultDistance: 200,
-    defaultStrength: 1,
-    defaultCharge: -100,
-    regulatorCharge: 80,
+    defaultStrength: 0.5,
+    defaultCharge: -800,
+    regulatorCharge: 0,
     linkCharge: 0,
     procedureCharge: 0,
     actionCharge: 0,
-    regulatorDistance: 100,
-    defaultChargeDistance: 300
+    regulatorDistance: 0,
+    defaultChargeDistance: 1000
 };
 
 Economics.LayoutAlgorithmForceBased.prototype.start = function () {
