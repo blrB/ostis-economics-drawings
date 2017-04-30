@@ -64,7 +64,7 @@ Economics.LayoutAlgorithmForceBased.prototype.stop = function () {
 
 Economics.LayoutAlgorithmForceBased.config = {
     friction: 0.9,
-    gravity: 0.1,
+    gravity: 0.2,
     defaultDistance: 200,
     defaultStrength: 0.5,
     defaultCharge: -800,
