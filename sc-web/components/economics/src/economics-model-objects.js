@@ -157,10 +157,6 @@ Economics.ModelObject.prototype.requestUpdate = function () {
     }
 };
 
-Economics.ModelObject.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.defaultCharge;
-Economics.ModelObject.prototype.getStrength = () => Economics.LayoutAlgorithmForceBased.config.defaultStrength;
-Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultDistance;
-
 /** Updates object state.
  */
 Economics.ModelObject.prototype.update = function () {
@@ -596,8 +592,6 @@ Economics.ModelProcedure = function (options) {
 
 Economics.ModelProcedure.prototype = Object.create(Economics.ModelLink.prototype);
 
-Economics.ModelProcedure.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.procedureCharge;
-
 Economics.ModelProcedure.getAllObjectsByContour = function (contour) {
 
     return new Promise(function (resolve, reject) {
@@ -712,8 +706,6 @@ Economics.ModelAction.getAllObjectsByContour = function (contour) {
     });
 };
 
-Economics.ModelAction.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.actionCharge;
-
 Economics.ModelAction.prototype.getConnectionPos = function (from) {
     var radius = this.scale.x + 10;
     var center = new Economics.Vector3(this.position.x + this.scale.x * 0.5, this.position.y + this.scale.y * 0.5, 0);
@@ -794,8 +786,6 @@ Economics.ModelRegulator = function (options) {
     this.addr = options.addr;
 };
 
-Economics.ModelRegulator.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.regulatorCharge;
-
 Economics.ModelRegulator.prototype = Object.create(Economics.ModelLink.prototype);
 
 Economics.ModelRegulator.getAllObjectsByContour = function (contour) {
@@ -862,3 +852,14 @@ Economics.ModelRegulator.getAllObjectsByContour = function (contour) {
         });
     });
 };
+
+
+Economics.ModelObject.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.defaultCharge;
+Economics.ModelObject.prototype.getChargeDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultChargeDistance;
+Economics.ModelObject.prototype.getStrength = () => Economics.LayoutAlgorithmForceBased.config.defaultStrength;
+Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultDistance;
+
+//
+// Economics.ModelAction.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.actionCharge;
+// Economics.ModelRegulator.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.regulatorCharge;
+// Economics.ModelProcedure.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.procedureCharge;
