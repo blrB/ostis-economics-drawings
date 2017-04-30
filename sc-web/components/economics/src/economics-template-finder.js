@@ -56,7 +56,7 @@ Economics.TemplateFinder.prototype = {
         });
     },
 
-    viewInEditor: function(data) {
+    viewInEditor: function (data) {
 
         function getRandomInt0to100() {
             return Math.floor(Math.random() * (100));
