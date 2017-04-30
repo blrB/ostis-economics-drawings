@@ -471,7 +471,7 @@ Economics.ModelEdge.prototype.update = function () {
 /*! Checks if this edge need to be drawen with arrow at the end
  */
 Economics.ModelEdge.prototype.hasArrow = function () {
-    return this.sc_type & (sc_type_arc_common | sc_type_arc_access);
+    return this.sc_type === EconomicsTypeEdge.Arrow;
 };
 
 /*!
@@ -765,13 +765,6 @@ Economics.ModelArrow.getAllObjectsByContour = function (contour) {
     });
 };
 
-Economics.ModelRegulatorHelper = function (options) {
-
-    this.labelString = options.labelString;
-    this.source = options.source;
-    this.target = options.target;
-};
-
 Economics.ModelRegulator = function (options) {
     Economics.ModelLink.call(this, options);
 
@@ -781,7 +774,14 @@ Economics.ModelRegulator = function (options) {
 
 Economics.ModelRegulator.prototype = Object.create(Economics.ModelLink.prototype);
 
-Economics.ModelRegulator.getAllObjectsByContour = function (contour) {
+Economics.ModelRegulatorHelper = function (options) {
+
+    this.labelString = options.labelString;
+    this.source = options.source;
+    this.target = options.target;
+};
+
+Economics.ModelRegulatorHelper.getAllObjectsByContour = function (contour) {
 
     return new Promise(function (resolve, reject) {
         window.sctpClient.iterate_constr(
@@ -855,14 +855,3 @@ Economics.ModelObject.prototype.getCharge = function () {
 Economics.ModelObject.prototype.getChargeDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultChargeDistance;
 Economics.ModelObject.prototype.getStrength = () => Economics.LayoutAlgorithmForceBased.config.defaultStrength;
 Economics.ModelObject.prototype.getDistance = () => Economics.LayoutAlgorithmForceBased.config.defaultDistance;
-
-//
-// Economics.ModelAction.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.actionCharge;
-// Economics.ModelRegulator.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.regulatorCharge;
-// Economics.ModelProcedure.prototype.getCharge = () => Economics.LayoutAlgorithmForceBased.config.procedureCharge;
-// Economics.ModelEdge.prototype.getDistance = () => {
-//     if (this.source instanceof Economics.ModelRegulator || this.target instanceof Economics.ModelRegulator) {
-//         return Economics.LayoutAlgorithmForceBased.config.regulatorDistance;
-//     }
-//     return Economics.LayoutAlgorithmForceBased.config.defaultDistance;
-// };

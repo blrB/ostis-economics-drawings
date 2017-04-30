@@ -1,6 +1,6 @@
 Economics.Creator = {};
 
-Economics.Creator.createLink = function(pos, containerId) {
+Economics.Creator.createLink = function (pos, containerId) {
     var link = new Economics.ModelLink({
         position: pos.clone(),
         scale: new Economics.Vector2(50, 50),
@@ -11,7 +11,7 @@ Economics.Creator.createLink = function(pos, containerId) {
     return link;
 };
 
-Economics.Creator.createProcedure = function(pos, containerId) {
+Economics.Creator.createProcedure = function (pos, containerId) {
     var procedure = new Economics.ModelProcedure({
         position: pos.clone(),
         scale: new Economics.Vector2(50, 50),
@@ -23,7 +23,7 @@ Economics.Creator.createProcedure = function(pos, containerId) {
     return procedure;
 };
 
-Economics.Creator.createAction = function(pos, containerId) {
+Economics.Creator.createAction = function (pos, containerId) {
     var action = new Economics.ModelAction({
         position: pos.clone(),
         scale: new Economics.Vector2(50, 50),
@@ -35,7 +35,7 @@ Economics.Creator.createAction = function(pos, containerId) {
     return action;
 };
 
-Economics.Creator.createRegulator = function(pos, containerId) {
+Economics.Creator.createRegulator = function (pos, containerId) {
     var regulator = new Economics.ModelRegulator({
         position: pos.clone(),
         scale: new Economics.Vector2(50, 50),
@@ -55,7 +55,7 @@ Economics.Creator.createRegulator = function(pos, containerId) {
  *
  * @return Economics.ModelEdge created edge
  */
-Economics.Creator.createEdge = function(source, target, sc_type) {
+Economics.Creator.createEdge = function (source, target, sc_type) {
     return new Economics.ModelEdge({
         source: source,
         target: target,

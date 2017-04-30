@@ -1,4 +1,4 @@
-Economics.Tree = function() {
+Economics.Tree = function () {
     this.triples = [];
     this.root = new Economics.TreeNode();
 };
@@ -6,8 +6,8 @@ Economics.Tree = function() {
 Economics.Tree.prototype = {
     constructor: Economics.Tree,
 
-    build: function(triples) {
-        
+    build: function (triples) {
+
         this.triples = [];
         this.triples = this.triples.concat(triples);
 
@@ -15,11 +15,11 @@ Economics.Tree.prototype = {
         var contours = {};
         for (t in this.triples) {
             var tpl = this.triples[t];
-            
+
             if (tpl[0].type & sc_type_node_struct)
                 contours[tpl[0].addr] = {el: tpl[0], childs: []};
         }
-        
+
         // collect contour elements
         var parentsDict = {};
         for (t in this.triples) {
@@ -41,31 +41,31 @@ Economics.Tree.prototype = {
     /*!
      * Build construction in \p scene
      */
-    output: function(scene) {
-        
+    output: function (scene) {
+
     }
 };
 
 
 // ----------------------------------
-Economics.TreeNode = function() {
+Economics.TreeNode = function () {
     this.childs = [];
     this.parent = null;
 };
 
 Economics.TreeNode.prototype = {
 
-    appendChild: function(child) {
+    appendChild: function (child) {
         if (child.parent)
             child.parent.removeChild(child);
-        
+
         if (EconomicsDebug.eanbled && this.hasChild(child))
             EconomicsDebug.error("Duplicate child item");
-        
+
         this.childs.push(child);
     },
 
-    removeChild: function(child) {
+    removeChild: function (child) {
         if (child.parent != this)
             EconomicsDebug.error("Item not found");
 
@@ -76,7 +76,7 @@ Economics.TreeNode.prototype = {
         child.parent = null;
     },
 
-    hasChild: function(child) {
+    hasChild: function (child) {
         return this.childs.indexOf(child);
     }
 

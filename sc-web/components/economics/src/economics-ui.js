@@ -1,7 +1,6 @@
-
 // ------------------------------
 
-Economics.Widget = function(postition, size) {
+Economics.Widget = function (postition, size) {
 }
 
 Economics.Widget.prototype = {
@@ -9,10 +8,10 @@ Economics.Widget.prototype = {
 };
 
 /// ------------------------------
-Economics.Button = function(position, size) {
+Economics.Button = function (position, size) {
     Economics.Widget.call(this, position, size);
 };
 
-Economics.Button.prototype = Object.create( Economics.Widget.prototype );
+Economics.Button.prototype = Object.create(Economics.Widget.prototype);
 
 

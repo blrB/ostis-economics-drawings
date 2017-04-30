@@ -9,7 +9,7 @@ EconomicsCommandCreateEdge.prototype = {
 
     constructor: EconomicsCommandCreateEdge,
 
-    undo: function() {
+    undo: function () {
         if (this.edge.is_selected) {
             var idx = this.scene.selected_objects.indexOf(this.edge);
             this.scene.selected_objects.splice(idx, 1);
@@ -20,10 +20,10 @@ EconomicsCommandCreateEdge.prototype = {
         this.scene.removeObject(this.edge);
     },
 
-    execute: function() {
+    execute: function () {
         var scene = this.scene;
-        if (this.edge == null){
-            this.edge = Economics.Creator.createEdge(this.source, this.target, EconomicsTypeEdgeNow);
+        if (this.edge == null) {
+            this.edge = Economics.Creator.createEdge(this.source, this.target, EconomicsTypeEdge.Arrow);
             scene.appendEdge(this.edge);
             var mouse_pos = new Economics.Vector2(scene.mouse_pos.x, scene.mouse_pos.y);
             var start_pos = new Economics.Vector2(scene.drag_line_points[0].x, scene.drag_line_points[0].y);
