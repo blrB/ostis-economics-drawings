@@ -54,7 +54,7 @@ EconomicsEdgeListener.prototype = {
         return false;
     },
 
-    onMouseUpObject: function(obj) {
+    onMouseUpObject: function (obj) {
         return true;
     },
 
@@ -66,7 +66,7 @@ EconomicsEdgeListener.prototype = {
         return false;
     },
 
-    onKeyUp: function(event) {
+    onKeyUp: function (event) {
         return false;
     }
 

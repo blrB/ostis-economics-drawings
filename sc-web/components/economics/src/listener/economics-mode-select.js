@@ -1,27 +1,27 @@
-EconomicsSelectListener = function(scene) {
+EconomicsSelectListener = function (scene) {
     this.scene = scene;
     this.position = null;
     this.offsetObject = null;
 };
 
 EconomicsSelectListener.prototype = {
-    
+
     constructor: EconomicsSelectListener,
 
-    selectObject: function(obj) {
+    selectObject: function (obj) {
         if (!d3.event.ctrlKey) this.scene.clearSelection();
         this.scene.appendSelection(obj);
         this.scene.updateObjectsVisual();
     },
 
-    onMouseMove: function(x, y) {
+    onMouseMove: function (x, y) {
         var self = this;
         var offset = new Economics.Vector3(x - this.scene.mouse_pos.x, y - this.scene.mouse_pos.y, 0);
         this.scene.mouse_pos.x = x;
         this.scene.mouse_pos.y = y;
         if (this.scene.focused_object) {
             this.scene.selected_objects.forEach(function (object) {
-                if (!(object.contour != null && self.scene.selected_objects.indexOf(object.contour) > -1)){
+                if (!(object.contour != null && self.scene.selected_objects.indexOf(object.contour) > -1)) {
                     object.setPosition(object.position.clone().add(offset));
                 }
             });
@@ -31,7 +31,7 @@ EconomicsSelectListener.prototype = {
         return false;
     },
 
-    onMouseDown: function(x, y) {
+    onMouseDown: function (x, y) {
         return false;
     },
 
@@ -43,11 +43,11 @@ EconomicsSelectListener.prototype = {
         return true;
     },
 
-    onMouseDownObject: function(obj) {
+    onMouseDownObject: function (obj) {
         this.offsetObject = obj;
         this.scene.focused_object = obj;
         this.position = this.scene.focused_object.position.clone();
-        if (d3.event.ctrlKey){
+        if (d3.event.ctrlKey) {
             this.selectObject(obj);
             this.onMouseUpObject(obj); // do not move object after select with ctrl
         } else {
@@ -61,11 +61,11 @@ EconomicsSelectListener.prototype = {
     onMouseUpObject: function (obj) {
         if (!this.scene.focused_object) return; // do nothing after select with ctrl
         var offset = new Economics.Vector3(this.position.x - this.scene.mouse_pos.x, this.position.y - this.scene.mouse_pos.y, 0);
-        if (!this.position.equals(this.scene.focused_object.position) && this.offsetObject == obj){
+        if (!this.position.equals(this.scene.focused_object.position) && this.offsetObject == obj) {
             var commands = [];
             var self = this;
             this.scene.selected_objects.forEach(function (object) {
-                if (!(object.contour != null && self.scene.selected_objects.indexOf(object.contour) > -1)){
+                if (!(object.contour != null && self.scene.selected_objects.indexOf(object.contour) > -1)) {
                     commands.push(new EconomicsCommandMoveObject(object, offset));
                 }
             });
@@ -79,11 +79,11 @@ EconomicsSelectListener.prototype = {
         return true;
     },
 
-    onKeyDown: function(event) {
+    onKeyDown: function (event) {
         return false;
     },
 
-    onKeyUp: function(event) {
+    onKeyUp: function (event) {
         return false;
     }
 
