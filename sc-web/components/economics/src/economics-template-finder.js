@@ -20,7 +20,7 @@ Economics.TemplateFinder.prototype = {
         this.templates.push(Economics.ModelProcedure);
         this.templates.push(Economics.ModelAction);
         this.templates.push(Economics.ModelArrow);
-        this.templates.push(Economics.ModelRegulator);
+        this.templates.push(Economics.ModelRegulatorHelper);
     },
 
     getAllObjectsByContour: function () {
@@ -75,11 +75,18 @@ Economics.TemplateFinder.prototype = {
                         link = Economics.Creator.createAction(new Economics.Vector3(x, 2000 + y, 0), '');
                     }
                     link.addr = model.addr;
+                    link.labelString = model.labelString;
+                    link.labelAddr = model.labelAddr;
                     link.setContent(model.labelString);
                     scene.appendObject(link);
                 } else if (model instanceof Economics.ModelArrow) {
                     var object = finder.findSourceAndTargetByModel(model);
-                    var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdgeNow);
+                    if (object.target && object.source) {
+                        var edge = Economics.Creator.createEdge(object.source, object.target, EconomicsTypeEdge.Arrow);
+                    } else {
+                        console.log("Error, can not create arrow " + model.source + " -> " + model.target);
+                        console.log(object.source + " -> " + object.target)
+                    }
                     scene.appendObject(edge);
                 } else if (model instanceof Economics.ModelRegulatorHelper) {
                     var object = finder.findSourceAndTargetByModel(model);
@@ -89,7 +96,12 @@ Economics.TemplateFinder.prototype = {
                         object.target.setContent(model.labelString);
                         scene.appendObject(object.target);
                     }
-                    var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdgeRegulator);
+                    if (object.target && object.source) {
+                        var edge = Economics.Creator.createEdge(object.target, object.source, EconomicsTypeEdge.Regulator);
+                    } else {
+                        console.log("Error, can not create arrow for regulator" + model.source + " -> " + model.target);
+                        console.log(object.source + " -> " + object.target)
+                    }
                     scene.appendObject(edge);
                 }
             })

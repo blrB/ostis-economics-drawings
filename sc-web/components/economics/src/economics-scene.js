@@ -39,8 +39,10 @@ var KeyCode = {
     Z: 90
 };
 
-var EconomicsTypeEdgeNow = sc_type_arc_pos_const_perm;
-var EconomicsTypeEdgeRegulator = sc_type_arc_pos_const_perm;
+var EconomicsTypeEdge = {
+    Arrow: 1,
+    Regulator: 2
+};
 
 Economics.Scene = function(options) {
 
