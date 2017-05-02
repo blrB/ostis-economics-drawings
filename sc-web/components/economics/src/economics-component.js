@@ -186,7 +186,15 @@ var economicsViewerWindow = function (sandbox) {
     };
 
     this.applyTranslation = function (namesMap) {
-        // TODO
+
+        for (addr in namesMap) {
+            var obj = this.editor.scene.getObjectByScAddr(addr);
+
+            if (obj) {
+                obj.setContent(namesMap[addr]);
+            }
+        }
+        this.editor.scene.updateObjectsVisual();
     };
 
 

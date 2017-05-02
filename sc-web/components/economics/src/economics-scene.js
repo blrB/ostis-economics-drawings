@@ -223,16 +223,21 @@ Economics.Scene.prototype = {
         return keys;
     },
 
-    /**
-     * Return object by sc-addr
-     * @param {String} addr sc-addr of object to find
-     * @return If object founded, then return it; otherwise return null
-     */
     getObjectByScAddr: function (addr) {
-        if (Object.prototype.hasOwnProperty.call(this.objects, addr))
-            return this.objects[addr];
+        var object = this.links.find(function (item) {
+            return item.labelAddr == addr;
+        });
 
-        return null;
+        if (object) {
+            return object;
+        } else {
+            var regulator = this.links.filter(function (object) {
+                return object.type === EconomicsLayoutObjectType.ModelRegulator;
+            });
+            return regulator.find(function (item) {
+                return item.addr == addr;
+            });
+        }
     },
 
     /**

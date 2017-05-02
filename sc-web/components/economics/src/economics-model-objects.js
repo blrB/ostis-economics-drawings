@@ -818,11 +818,16 @@ Economics.ModelRegulatorHelper.getAllObjectsByContour = function (contour) {
             for (var template = 0; template < results.results.length; template++) {
                 var source = results.get(template, "source");
                 var target = results.get(template, "target");
-                var object = new Economics.ModelRegulatorHelper({
-                    source: source,
-                    target: target
+                var find = objects.find(function (object) {
+                    return object.source == source && object.target == target;
                 });
-                objects.push(object);
+                if (!find){
+                    var object = new Economics.ModelRegulatorHelper({
+                        source: source,
+                        target: target
+                    });
+                    objects.push(object);
+                }
             }
 
             var labelAddrs = objects.map(function (object) {
