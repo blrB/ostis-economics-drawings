@@ -197,6 +197,8 @@ var economicsViewerWindow = function (sandbox) {
                 obj.setContent(namesMap[addr]);
             }
         }
+
+        this.editor.scene.updateObjectsVisual();
     };
 
 
