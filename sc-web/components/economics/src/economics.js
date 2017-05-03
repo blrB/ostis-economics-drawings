@@ -185,7 +185,9 @@ Economics.Editor.prototype = {
     toolDelete: function () {
         return this.tool('delete');
     },
-
+    toolLegend: function () {
+        return this.tool('legend');
+    },
     toolClear: function () {
         return this.tool('clear');
     },
@@ -231,6 +233,33 @@ Economics.Editor.prototype = {
         this.toolRedo().click(function () {
             self.scene.commandManager.redo();
             self.scene.updateRender();
+        });
+
+        this.toolLegend().click(function () {
+            var tool = $(this);
+
+            function stop_modal() {
+                tool.popover('destroy');
+                EconomicsLegend.legendVisibel = false;
+            }
+
+            if (EconomicsLegend.legendVisibel)
+                stop_modal();
+            else {
+                tool.popover({
+                    container: container,
+                    title: ' ',
+                    html: true,
+                    display: true
+                }).popover('show');
+                cont.find('.popover-title').append('<button id="scgg-type-close" type="button" class="close">&times;</button>');
+                cont.find('.popover-content ').append(EconomicsLegend.createTable(self.scene));
+                EconomicsLegend.legendVisibel = true;
+            }
+            $(container + ' #scgg-type-close').click(function () {
+                stop_modal();
+            });
+
         });
 
         this.toolChangeIdtf().click(function () {

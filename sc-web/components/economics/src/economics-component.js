@@ -186,10 +186,12 @@ var economicsViewerWindow = function (sandbox) {
     };
 
     this.applyTranslation = function (namesMap) {
+        EconomicsLegend.loadIdf();
+        if(EconomicsLegend.legendVisibel)
+            this.editor.toolLegend().click();
 
         for (addr in namesMap) {
             var obj = this.editor.scene.getObjectByScAddr(addr);
-
             if (obj) {
                 obj.setContent(namesMap[addr]);
             }

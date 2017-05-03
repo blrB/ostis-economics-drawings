@@ -104,6 +104,7 @@ Economics.Scene.prototype = {
     init: function () {
         this.layout_manager = new Economics.LayoutManager();
         this.layout_manager.init(this);
+        EconomicsLegend.loadIdf();
     },
 
     appendLink: function (link) {
@@ -193,6 +194,8 @@ Economics.Scene.prototype = {
      * Updates render objects state
      */
     updateObjectsVisual: function () {
+        if(EconomicsLegend.legendVisibel)
+            EconomicsLegend.updateTable(this);
         this.render.updateObjects();
     },
 
