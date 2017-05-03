@@ -20,6 +20,7 @@ module.exports = function () {
                     components + 'src/economics-alphabet.js',
                     components + 'src/economics-render.js',
                     components + 'src/economics-scene.js',
+                    components + 'src/economics-legend.js',
                     components + 'src/economics-layout.js',
                     components + 'src/economics-tree.js',
                     components + 'src/economics-struct.js',
