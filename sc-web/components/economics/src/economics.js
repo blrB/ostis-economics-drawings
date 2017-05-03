@@ -236,22 +236,27 @@ Economics.Editor.prototype = {
         });
 
         this.toolLegend().click(function () {
+
+            self.scene.setModal(EconomicsEditMode.EconomicsModalLegend);
             var tool = $(this);
 
             function stop_modal() {
+                self.scene.setModal(EconomicsModalMode.EconomicsModalNone);
                 tool.popover('destroy');
                 EconomicsLegend.legendVisibel = false;
             }
 
+            tool.popover({
+                container: container,
+                title: 'Info',
+                html: true,
+                display: true
+            });
+            tool.popover('show');
+
             if (EconomicsLegend.legendVisibel)
                 stop_modal();
             else {
-                tool.popover({
-                    container: container,
-                    title: ' ',
-                    html: true,
-                    display: true
-                }).popover('show');
                 cont.find('.popover-title').append('<button id="scgg-type-close" type="button" class="close">&times;</button>');
                 cont.find('.popover-content ').append(EconomicsLegend.createTable(self.scene));
                 EconomicsLegend.legendVisibel = true;
@@ -569,6 +574,7 @@ Economics.Editor.prototype = {
         update_tool(this.toolZoomIn());
         update_tool(this.toolZoomOut());
         update_tool(this.toolIntegrate());
+        update_tool(this.toolLegend());
     },
 
     collectIdtfs: function (keyword) {

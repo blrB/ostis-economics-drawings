@@ -187,6 +187,7 @@ var economicsViewerWindow = function (sandbox) {
 
     this.applyTranslation = function (namesMap) {
         EconomicsLegend.loadIdf();
+
         if(EconomicsLegend.legendVisibel)
             this.editor.toolLegend().click();
 
@@ -196,7 +197,6 @@ var economicsViewerWindow = function (sandbox) {
                 obj.setContent(namesMap[addr]);
             }
         }
-        this.editor.scene.updateObjectsVisual();
     };
 
 

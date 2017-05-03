@@ -1,10 +1,9 @@
 var EconomicsLayoutObjectType = {
     ModelNULL: 0,
     //TODO write real idf
-    ModelProcedure: 'question_of_finding_definitional_domain',
-    ModelAction: 'action.conclude_contract_for_maintenance_of_cash_register_equipment',
-    ModelRegulator: 'action.develop_organization_charter',
-    ModelTest:'questiond',
+    ModelProcedure: 'concept_administrative_procedure',
+    ModelAction: 'question',
+    ModelRegulator: 'concept_regulator',
     ModelLegend: 4
 };
 
@@ -13,25 +12,27 @@ var EconomicsLegend = {
     objectsInScene:[],
     sysIdf:[],
     legendVisibel:false,
+
     loadIdf: function() {
-        this.sysIdf = [EconomicsLayoutObjectType.ModelRegulator, EconomicsLayoutObjectType.ModelAction, EconomicsLayoutObjectType.ModelProcedure];
-        var keynodes = this.sysIdf;
         this.idf=[];
-        SCWeb.core.Server.resolveScAddr(keynodes, function (keynodes) {
-            SCWeb.core.Server.resolveIdentifiers(keynodes, function (idf) {
-                EconomicsLegend.sysIdf.forEach(function (obj) {
-                    EconomicsLegend.idf.push(idf[keynodes [obj]]);
-                });
 
+        this.sysIdf = [
+            EconomicsKeynodesHandler.scKeynodes.concept_regulator,
+            EconomicsKeynodesHandler.scKeynodes.question,
+            EconomicsKeynodesHandler.scKeynodes.concept_administrative_procedure
+        ];
+
+        var promises = this.sysIdf.map(addr => this.findComment(addr));
+
+        return Promise.all(promises).then(result => {
+            result.forEach(comment => {
+                EconomicsLegend.idf.push(comment);
             });
-
-        });
-
-
+        })
     },
+
     createTable: function(scene) {
         this.setObjectInScene(scene.links);
-        // this.findComment(12);
         var table='<table id=economic-legend-table> ';
         this.objectsInScene.forEach(function (obj) {
             table+=EconomicsLegend.addTR(obj);
@@ -41,61 +42,69 @@ var EconomicsLegend = {
 
         return table
     },
+
     updateTable(scene){
         $("#economic-legend-table").html(this.createTable(scene));
     },
-//TODO not work and don't know why
-    findComment: function(idf) {
-        // return new Promise(function (resolve, reject) {
+
+    findComment: function(addr) {
+        return new Promise(function (resolve, reject) {
             window.sctpClient.iterate_constr(
                 SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
-                    [EconomicsLayoutObjectType.ModelTest,
+                    [   addr,
                         sc_type_arc_common | sc_type_const,
                         sc_type_node | sc_type_const,
                         sc_type_arc_pos_const_perm,
-                        'nrel_legend'
+                        EconomicsKeynodesHandler.scKeynodes.nrel_legend
                     ],
                     {"empty_node1": 2}),
-                SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5A_A_F_A_F,
                     [   sc_type_node | sc_type_const,
                         sc_type_arc_common | sc_type_const,
                         "empty_node1",
                         sc_type_arc_pos_const_perm,
-                        'nrel_sc_text_translation'
+                        EconomicsKeynodesHandler.scKeynodes.nrel_sc_text_translation
                     ],
-                    {"empty_node2": 2}),
+                    {"empty_node2": 0}),
                 SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
-                    ["empty_node2",
+                    [  "empty_node2",
                         sc_type_arc_common | sc_type_const,
-                        sc_type_node | sc_type_const,
+                        sc_type_link,
                         sc_type_arc_pos_const_perm,
-                        'nrel_comment'
+                        EconomicsKeynodesHandler.scKeynodes.nrel_comment
                     ],
                     {"comment": 2})
+                // TODO add language
             ).done(function (results) {
 
-                var procedures = [];
-                console.log(results.results.length);
-                // resolve(procedures);
+                var comment = results.get(0, "comment");
+                window.sctpClient.get_link_content(comment)
+                    .done(function(res) {
+                        resolve(res);
+                    })
+                    .fail(function() {
+                        console.log("fail in findComment get_link_content");
+                        resolve("null");
+                    });
             }).fail(function () {
-                console.log("fail in Economics.EconomicsLegend.findComment");
-                // resolve([]);
+                console.log("fail in findComment");
+                resolve("null");
             });
-        // });
-
-
+        });
     },
 
     setObjectInScene: function(links) {
         this.objectsInScene=[];
-        this.sysIdf.forEach(function (obj) {
-            var findObj =links.find(function (sceneObj){
+        var types = [EconomicsLayoutObjectType.ModelRegulator, EconomicsLayoutObjectType.ModelAction, EconomicsLayoutObjectType.ModelProcedure];
+        types.forEach(function (obj) {
+            var findObj = links.find(function (sceneObj){
                 return sceneObj.type===obj;
             });
             if(findObj)
                 EconomicsLegend.objectsInScene.push(obj)
         });
     },
+
     addTR: function(type) {
         if(type===EconomicsLayoutObjectType.ModelRegulator)
             return '<tr> ' +
@@ -115,8 +124,6 @@ var EconomicsLegend = {
 
 
     }
-
-
 
 };
 

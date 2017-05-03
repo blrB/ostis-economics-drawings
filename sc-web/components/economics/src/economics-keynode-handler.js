@@ -4,6 +4,10 @@ EconomicsKeynodesHandler = {
         'nrel_goto',
         'nrel_inclusion',
         'nrel_regulator',
+        'nrel_legend',
+        'nrel_sc_text_translation',
+        'nrel_comment',
+        'concept_regulator',
         'concept_administrative_procedure',
         'question'
     ],

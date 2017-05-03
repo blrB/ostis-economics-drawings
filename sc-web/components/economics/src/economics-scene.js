@@ -14,7 +14,8 @@ var EconomicsEditMode = {
 var EconomicsModalMode = {
     EconomicsModalNone: 0,
     EconomicsModalIdtf: 1,
-    EconomicsModalType: 2
+    EconomicsModalType: 2,
+    EconomicsModalLegend: 3
 };
 
 var KeyCode = {
@@ -194,8 +195,7 @@ Economics.Scene.prototype = {
      * Updates render objects state
      */
     updateObjectsVisual: function () {
-        if(EconomicsLegend.legendVisibel)
-            EconomicsLegend.updateTable(this);
+
         this.render.updateObjects();
     },
 
