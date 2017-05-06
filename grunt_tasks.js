@@ -12,6 +12,7 @@ module.exports = function () {
         concat: {
             economicscmp: {
                 src: [
+                    components + 'src/clarificationOfQuestion.js',
                     components + 'src/economics-keynode-handler.js',
                     components + 'src/economics.js',
                     components + 'src/economics-debug.js',
