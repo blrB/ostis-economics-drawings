@@ -63,13 +63,15 @@ var ClarificationOfQuestion = {
 
                     var addrs = [];
                     var alternatives = {};
+                    var name = results.get(0, "class");
 
                     for (var template = 0; template < results.results.length; template++) {
                         var subClass = results.get(template, "subClass");
                         addrs.push(subClass);
                     }
 
-                    SCWeb.core.Server.resolveIdentifiers(addrs, function (idtfs) {
+                    SCWeb.core.Server.resolveIdentifiers(addrs.concat([name]), function (idtfs) {
+                        alternatives['name'] = idtfs[name];
                         addrs.forEach(function (addr) {
                             alternatives[addr] = idtfs[addr];
                         });
@@ -83,6 +85,7 @@ var ClarificationOfQuestion = {
             findSubclasses.then((alternatives) =>{
                 console.log(alternatives);
                 // TODO
+                // this.generateArcForResult(target, chooseAddr);
             });
         }
 
