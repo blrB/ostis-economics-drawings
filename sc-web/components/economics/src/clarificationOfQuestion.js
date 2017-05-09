@@ -42,17 +42,68 @@ var ClarificationOfQuestion = {
 
     eventHandler: function (addr, arg) {
 
+        let modalPromise = alternatives => {
+            return new Promise((resolve, reject) => {
+                let chooses = Object.keys(alternatives)
+                    .filter(key => key !== 'question' && key !== 'warning')
+                    .map(key => `
+<div class="radio">
+  <label><input type="radio" name="optradio" class="alternative" option="${key}">${alternatives[key]}</label>
+</div>`
+                    )
+                    .reduce((result, el) => result + el, '');
+                $('body').append(`
+<div class="modal fade" id="chooseAlternativeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+        <h4 class="modal-title" id="myModalLabel">${alternatives.question.name}</h4>
+        <div id="warning" class="alert alert-warning" hidden="">${alternatives.warning.name}</div>
+      </div>
+      <div class="modal-body">
+        ${chooses}
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="btn btn-default cancel" data-dismiss="modal">Close</button>-->
+        <button type="button" class="btn btn-primary choose">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>`);
+                let choosed = null;
+                let modal = $('#chooseAlternativeModal');
+                $('#chooseAlternativeModal .cancel').click(reject);
+                $('#chooseAlternativeModal .choose').click((() => {
+                    if (choosed) {
+                        resolve({question: alternatives.question.idtf, target: choosed});
+                        modal.modal('hide');
+                    } else {
+                        modal.find('#warning').show();
+                    }
+                }));
+                $('#chooseAlternativeModal').modal({backdrop: 'static'});
+                $('#chooseAlternativeModal').on('hidden.bs.modal', () => {
+                    $('#chooseAlternativeModal').remove();
+                    reject()
+                });
+                $('#chooseAlternativeModal .alternative').click(function () {
+                    choosed = $(this).attr('option');
+                });
+            });
+        };
+
         function handler(target) {
             var findSubclasses = new Promise((resolve, reject) => {
                 window.sctpClient.iterate_constr(
                     SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_A,
-                        [   target,
+                        [target,
                             sc_type_arc_pos_const_perm,
                             sc_type_node | sc_type_const
                         ],
                         {"class": 2}),
                     SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
-                        [   "class",
+                        ["class",
                             sc_type_arc_common | sc_type_const,
                             sc_type_node | sc_type_const,
                             sc_type_arc_pos_const_perm,
@@ -71,7 +122,8 @@ var ClarificationOfQuestion = {
                     }
 
                     SCWeb.core.Server.resolveIdentifiers(addrs.concat([name]), function (idtfs) {
-                        alternatives['name'] = idtfs[name];
+                        alternatives['question'] = {name: idtfs[name], idtf: name};
+                        alternatives.warning = {name: 'warning'};
                         addrs.forEach(function (addr) {
                             alternatives[addr] = idtfs[addr];
                         });
@@ -82,11 +134,14 @@ var ClarificationOfQuestion = {
                 });
             });
 
-            findSubclasses.then((alternatives) =>{
+            findSubclasses.then((alternatives) => {
                 console.log(alternatives);
-                // TODO
-                // this.generateArcForResult(target, chooseAddr);
-            });
+                return alternatives;
+            })
+                .then(alternatives => modalPromise(alternatives))
+                .then(result => {
+                    this.generateArcForResult(result.question, result.target)
+                });
         }
 
         window.sctpClient.get_arc(arg).done((array) => {
@@ -96,12 +151,12 @@ var ClarificationOfQuestion = {
             var isActionPromise = new Promise((resolve, reject) => {
                 window.sctpClient.iterate_constr(
                     SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_3F_A_F,
-                        [   ClarificationOfQuestion.scKeynodes.action_select_one_from_alternatives,
+                        [ClarificationOfQuestion.scKeynodes.action_select_one_from_alternatives,
                             sc_type_arc_pos_const_perm,
                             target
                         ]),
                     SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_F_A_F,
-                        [   target,
+                        [target,
                             sc_type_arc_common | sc_type_const,
                             ClarificationOfQuestion.userAddr,
                             sc_type_arc_pos_const_perm,
@@ -112,16 +167,16 @@ var ClarificationOfQuestion = {
                 });
             });
 
-            isActionPromise.then((target) => handler(target));
+            isActionPromise.then(handler.bind(this));
         });
     },
 
-    generateArcForResult : function (questionAddr, chooseAddr) {
+    generateArcForResult: function (questionAddr, chooseAddr) {
         window.sctpClient.create_arc(sc_type_arc_common | sc_type_const, questionAddr, chooseAddr).done((arc_addr) => {
             window.sctpClient.create_arc(sc_type_arc_pos_const_perm, ClarificationOfQuestion.scKeynodes.nrel_result, arc_addr).done(() => {
                 console.log("generate result");
             }).fail(() => console.log("fail when add nrel_result"));
-        }).fail(() => console.log("fail when add result"));
+        }).fail(() => console.log(`fail when add result [question: ${questionAddr}, choose: ${chooseAddr}]`));
     }
 
 };
@@ -134,12 +189,6 @@ var ClarificationOfQuestion = {
         })
     })();
 })();
-
-
-
-
-
-
 
 
 // TEST ----------------------------------------- delete in master and delete kb
