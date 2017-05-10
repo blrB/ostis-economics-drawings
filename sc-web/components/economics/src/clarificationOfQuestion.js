@@ -140,7 +140,7 @@ var ClarificationOfQuestion = {
             })
                 .then(alternatives => modalPromise(alternatives))
                 .then(result => {
-                    this.generateArcForResult(result.question, result.target)
+                    this.generateArcForResult(target, result.target)
                 });
         }
 
